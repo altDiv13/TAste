@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12161A">
+<title>TASTE — гид по ресторанам, кафе и барам</title>
+<meta name="description" content="12 проверенных мест: рестораны, кафе и бары с меню, средним чеком и честными отзывами.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   0. ТОКЕНЫ — палитра: солнечный #FFC400 + графит #2F3640
+   ============================================================ */
+:root{
+  /* база — графитовые обертоны */
+  --bg:#12161A;
+  --bg-2:#171C21;
+  --graphite:#2F3640;
+  --surface:rgba(255,255,255,.045);
+  --surface-2:rgba(255,255,255,.08);
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.2);
+
+  --text:#F5F2EA;
+  --muted:#98A1AA;
+  --muted-2:#6C757F;
+
+  /* акцент — солнечный */
+  --sun:#FFC400;
+  --sun-soft:#FFE066;
+  --sun-deep:#FF9D00;
+  --sun-dim:rgba(255,196,0,.14);
+
+  --grad:linear-gradient(100deg,#FFE066 0%,#FFC400 48%,#FF9D00 100%);
+  --grad-text:linear-gradient(100deg,#FFE98F 0%,#FFC400 55%,#FFA318 100%);
+  --grad-soft:linear-gradient(150deg,rgba(255,196,0,.16),rgba(255,157,0,.05));
+
+  --r-xl:30px; --r-lg:22px; --r-md:16px; --r-sm:11px;
+
+  --font-d:'Unbounded',system-ui,-apple-system,sans-serif;
+  --font-b:'Manrope',system-ui,-apple-system,sans-serif;
+  --font-i:'Playfair Display',Georgia,serif;
+
+  --ease:cubic-bezier(.22,1,.36,1);
+  --ease-io:cubic-bezier(.65,.05,.36,1);
+  --pad:clamp(18px,4vw,52px);
+}
+
+/* ============================================================
+   1. RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--font-b);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+button,input,select{font:inherit;color:inherit}
+button{background:none;border:0;padding:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+ul,ol{margin:0;padding:0;list-style:none}
+h1,h2,h3,h4,p{margin:0}
+::selection{background:rgba(255,196,0,.3);color:#fff}
+:focus-visible{outline:2px solid var(--sun);outline-offset:4px;border-radius:6px}
+
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+
+/* ============================================================
+   2. УТИЛИТЫ
+   ============================================================ */
+.container{width:min(1280px,100% - var(--pad)*2);margin-inline:auto}
+.glass{
+  background:linear-gradient(150deg,rgba(255,255,255,.085),rgba(255,255,255,.025));
+  border:1px solid var(--line);
+  backdrop-filter:blur(22px) saturate(140%);
+  -webkit-backdrop-filter:blur(22px) saturate(140%);
+}
+.grad-text{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stroke-text{color:transparent;-webkit-text-stroke:1.5px rgba(245,242,234,.5)}
+.serif{font-family:var(--font-i);font-style:italic;font-weight:400}
+
+/* Плёночное зерно */
+.grain{
+  position:fixed;inset:-60%;z-index:9;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grainShift 9s steps(8) infinite;
+}
+@keyframes grainShift{
+  0%{transform:translate(0,0)}12%{transform:translate(-3%,-4%)}25%{transform:translate(2%,-2%)}
+  37%{transform:translate(-2%,3%)}50%{transform:translate(3%,1%)}62%{transform:translate(-1%,4%)}
+  75%{transform:translate(4%,-3%)}87%{transform:translate(-4%,2%)}100%{transform:translate(0,0)}
+}
+
+/* Кастомный курсор */
+.cursor,.cursor-dot{
+  position:fixed;top:0;left:0;z-index:1000;pointer-events:none;border-radius:50%;
+  mix-blend-mode:difference;will-change:transform;
+}
+.cursor{
+  width:38px;height:38px;margin:-19px 0 0 -19px;border:1px solid rgba(255,255,255,.5);
+  transition:width .35s var(--ease),height .35s var(--ease),margin .35s var(--ease),
+             background .35s var(--ease),border-color .35s,opacity .3s;
+}
+.cursor-dot{width:5px;height:5px;margin:-2.5px 0 0 -2.5px;background:#fff}
+body.is-hovering .cursor{
+  width:74px;height:74px;margin:-37px 0 0 -37px;background:rgba(255,255,255,.16);border-color:transparent;
+}
+body.is-hovering .cursor-dot{opacity:0}
+@media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){.cursor,.cursor-dot{display:none!important}}
+
+/* Прелоадер */
+.preloader{
+  position:fixed;inset:0;z-index:2000;display:grid;place-items:center;background:var(--bg);
+  transition:opacity .7s var(--ease),visibility .7s;
+}
+.preloader.is-done{opacity:0;visibility:hidden;pointer-events:none}
+.preloader__inner{text-align:center;width:min(300px,72vw)}
+.preloader__mark{
+  font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.44em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:22px;
+}
+.preloader__bar{height:1px;background:rgba(255,255,255,.12);overflow:hidden}
+.preloader__bar span{display:block;height:100%;width:0;background:var(--grad);transition:width .35s linear}
+.preloader__num{margin-top:14px;font-family:var(--font-d);font-size:11px;color:var(--muted-2);letter-spacing:.2em}
+
+/* ============================================================
+   3. НАВИГАЦИЯ
+   ============================================================ */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:70;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:20px var(--pad);border-bottom:1px solid transparent;
+  transition:transform .55s var(--ease),background .45s,border-color .45s,padding .45s,backdrop-filter .45s;
+}
+.nav.is-scrolled{
+  padding-block:12px;background:rgba(18,22,26,.68);
+  backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);
+  border-bottom-color:var(--line);
+}
+.nav.is-hidden{transform:translateY(-105%)}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:700;font-size:18px;letter-spacing:-.02em}
+.logo__mark{
+  display:grid;place-items:center;width:32px;height:32px;border-radius:50%;
+  background:var(--grad);color:#26200A;font-size:13px;font-weight:800;
+  box-shadow:0 0 28px -6px rgba(255,196,0,.8);
+}
+.logo .dot{color:var(--sun)}
+.nav__links{display:flex;gap:32px}
+.nav__links a{position:relative;font-size:14px;font-weight:500;color:var(--muted);transition:color .3s}
+.nav__links a::after{
+  content:'';position:absolute;left:0;bottom:-6px;height:1px;width:100%;
+  background:var(--grad);transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ease);
+}
+.nav__links a:hover{color:var(--text)}
+.nav__links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav__burger{display:none;flex:0 0 auto;width:42px;height:42px;place-items:center;border-radius:50%;border:1px solid var(--line);transition:border-color .3s,background .3s}
+.nav__burger:hover{border-color:var(--sun);background:rgba(255,196,0,.1)}
+.nav__burger span{display:block;width:16px;height:1.5px;background:var(--text);position:relative;transition:transform .4s var(--ease)}
+.nav__burger span::before,.nav__burger span::after{
+  content:'';position:absolute;left:0;width:16px;height:1.5px;background:var(--text);transition:transform .4s var(--ease)
+}
+.nav__burger span::before{top:-5px}.nav__burger span::after{top:5px}
+.nav.is-open .nav__burger span{transform:rotate(45deg)}
+.nav.is-open .nav__burger span::before{transform:translateY(5px) rotate(-90deg)}
+.nav.is-open .nav__burger span::after{transform:translateY(-5px) rotate(-90deg);opacity:0}
+
+/* Мобильное меню */
+.mobile-menu{
+  position:fixed;inset:0;z-index:69;display:grid;place-items:center;
+  background:rgba(15,18,22,.96);backdrop-filter:blur(24px);
+  opacity:0;visibility:hidden;transition:opacity .5s var(--ease),visibility .5s;
+}
+.mobile-menu.is-open{opacity:1;visibility:visible}
+.mobile-menu ul{display:grid;gap:6px;text-align:center}
+.mobile-menu a{
+  font-family:var(--font-d);font-size:clamp(26px,7vw,42px);font-weight:500;
+  letter-spacing:-.03em;color:var(--muted);transition:color .3s,transform .4s var(--ease);
+  display:inline-block;
+}
+.mobile-menu a:hover,.mobile-menu a:active{color:var(--sun);transform:translateX(6px)}
+
+/* ============================================================
+   4. КНОПКИ
+   ============================================================ */
+.btn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:17px 32px;border-radius:999px;overflow:hidden;
+  font-weight:700;font-size:15px;letter-spacing:.005em;color:#241D05;background:var(--grad);
+  box-shadow:0 18px 46px -24px rgba(255,196,0,.95),inset 0 1px 0 rgba(255,255,255,.45);
+  transition:box-shadow .4s var(--ease);will-change:transform;
+}
+.btn::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+  background:linear-gradient(100deg,rgba(255,255,255,.6),rgba(255,255,255,0) 48%);transition:opacity .4s;
+}
+.btn:hover::after{opacity:1}
+.btn:hover{box-shadow:0 26px 66px -22px rgba(255,196,0,.85),inset 0 1px 0 rgba(255,255,255,.6)}
+.btn__icon{
+  display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
+  background:rgba(36,29,5,.15);font-size:12px;transition:transform .45s var(--ease);
+}
+.btn:hover .btn__icon{transform:translateX(3px) rotate(45deg)}
+.btn--ghost{
+  background:rgba(255,255,255,.045);color:var(--text);border:1px solid var(--line-strong);
+  backdrop-filter:blur(14px);box-shadow:none;
+}
+.btn--ghost:hover{background:rgba(255,255,255,.1);box-shadow:none}
+.btn--ghost .btn__icon{background:rgba(255,196,0,.16);color:var(--sun)}
+.btn--sm{padding:12px 22px;font-size:13.5px}
+.btn--block{width:100%}
+
+/* ============================================================
+   5. HERO
+   ============================================================ */
+.hero{
+  position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+  padding:148px 0 84px;overflow:hidden;isolation:isolate;
+}
+.hero__bg{
+  position:absolute;inset:0;z-index:-1;
+  background:
+    radial-gradient(900px 620px at 76% 16%,rgba(255,196,0,.13),transparent 62%),
+    radial-gradient(680px 520px at 8% 84%,rgba(255,157,0,.09),transparent 66%),
+    radial-gradient(1100px 760px at 50% -10%,rgba(255,224,102,.05),transparent 72%),
+    var(--bg);
+}
+.hero__mesh{
+  position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:88px 88px;
+  mask-image:radial-gradient(70% 60% at 50% 40%,#000 0%,transparent 78%);
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 40%,#000 0%,transparent 78%);
+}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;pointer-events:none}
+.hero__vignette{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 82% at 50% 44%,transparent 38%,rgba(18,22,26,.72) 100%);
+}
+.hero .container{position:relative;z-index:3}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:clamp(22px,3vw,32px);
+}
+.eyebrow::before{content:'';width:26px;height:1px;background:var(--grad)}
+.eyebrow .dot{
+  width:6px;height:6px;border-radius:50%;background:var(--sun);
+  box-shadow:0 0 12px 2px rgba(255,196,0,.8);animation:pulse 2.2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+
+.hero-title{
+  font-family:var(--font-d);font-weight:600;
+  font-size:clamp(3rem,11.4vw,10.2rem);line-height:.86;letter-spacing:-.045em;
+  margin:0 0 clamp(24px,3vw,38px);
+}
+.hero-title .line{display:block;overflow:hidden;padding-bottom:.07em}
+.hero-title .line:nth-child(2){padding-left:clamp(0px,6vw,108px)}
+.char{display:inline-block;will-change:transform,opacity}
+.hero__lead{
+  max-width:44ch;font-size:clamp(15px,1.3vw,17.5px);line-height:1.62;color:var(--muted);
+  margin-bottom:clamp(30px,3.4vw,42px);
+}
+.hero__lead strong{color:var(--text);font-weight:600}
+.hero__actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.hero__stats{
+  display:flex;flex-wrap:wrap;gap:clamp(26px,4vw,60px);
+  margin-top:clamp(44px,6vw,76px);padding-top:clamp(24px,3vw,32px);
+  border-top:1px solid var(--line);max-width:800px;
+}
+.stat__value{
+  font-family:var(--font-d);font-weight:500;font-size:clamp(1.55rem,2.5vw,2.3rem);
+  line-height:1;letter-spacing:-.03em;display:flex;align-items:baseline;
+}
+.stat__value .suffix{font-size:.5em;color:var(--muted);margin-left:3px;font-weight:400}
+.stat__label{margin-top:9px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2)}
+
+.hero__float{
+  position:absolute;right:calc(var(--pad) + 8px);bottom:16%;z-index:3;width:232px;
+  padding:18px 20px;border-radius:var(--r-lg);border:1px solid var(--line);
+  transform:rotate(-4deg);box-shadow:0 40px 90px -50px rgba(255,196,0,.75);pointer-events:none;
+}
+.hero__float .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero__float .name{font-family:var(--font-d);font-size:12.5px;font-weight:500}
+.hero__float .score{font-family:var(--font-d);font-size:21px;font-weight:600;letter-spacing:-.04em;color:var(--sun)}
+.hero__float .meta{font-size:11px;color:var(--muted-2);margin-top:6px;letter-spacing:.04em}
+.hero__float .line{height:1px;background:var(--line);margin:13px 0 11px}
+.hero__float .quote{font-size:12.5px;line-height:1.5;color:var(--muted);font-family:var(--font-i);font-style:italic}
+@media (max-width:1180px){.hero__float{display:none}}
+
+.scroll-hint{
+  position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:3;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-2);
+}
+.scroll-hint i{
+  display:block;width:1px;height:42px;position:relative;overflow:hidden;
+  background:linear-gradient(to bottom,var(--muted-2),transparent);
+}
+.scroll-hint i::after{
+  content:'';position:absolute;top:-42px;left:0;width:1px;height:42px;
+  background:var(--sun);animation:scrollLine 2.4s var(--ease-io) infinite;
+}
+@keyframes scrollLine{0%{top:-42px}60%,100%{top:42px}}
+
+/* ============================================================
+   6. СЕКЦИИ — общее
+   ============================================================ */
+.section{position:relative;padding:clamp(72px,10vw,140px) 0}
+.section__head{
+  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+  gap:24px;margin-bottom:clamp(32px,4vw,54px);
+}
+.section__kicker{
+  display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--sun);margin-bottom:18px;
+}
+.section__kicker::before{content:'/';color:var(--muted-2);font-size:13px}
+.section__title{
+  font-family:var(--font-d);font-weight:500;
+  font-size:clamp(2.1rem,5.4vw,4.4rem);line-height:.94;letter-spacing:-.04em;
+}
+.section__title em{font-family:var(--font-i);font-style:italic;font-weight:400;letter-spacing:-.01em}
+.section__desc{max-width:38ch;color:var(--muted);font-size:15px;line-height:1.65}
+
+/* Появление при скролле */
+[data-reveal]{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+[data-reveal].is-in{opacity:1;transform:none}
+[data-reveal][data-delay="1"]{transition-delay:.08s}
+[data-reveal][data-delay="2"]{transition-delay:.16s}
+[data-reveal][data-delay="3"]{transition-delay:.24s}
+@media (prefers-reduced-motion:reduce){
+  [data-reveal]{opacity:1!important;transform:none!important}
+  .grain{display:none}
+}
+
+/* Бегущая строка */
+.ticker{
+  position:relative;overflow:hidden;padding:22px 0;
+  border-block:1px solid var(--line);background:rgba(255,255,255,.02);
+}
+.ticker__track{display:flex;gap:44px;width:max-content;animation:tickerMove 38s linear infinite}
+.ticker:hover .ticker__track{animation-play-state:paused}
+.ticker__item{
+  display:flex;align-items:center;gap:44px;font-family:var(--font-d);
+  font-size:clamp(13px,1.5vw,17px);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted-2);white-space:nowrap;
+}
+.ticker__item b{color:var(--sun);font-weight:500}
+.ticker__star{color:var(--sun);opacity:.7}
+@keyframes tickerMove{to{transform:translateX(-50%)}}
+
+/* ============================================================
+   7. КАТАЛОГ
+   ============================================================ */
+.catalog{background:linear-gradient(to bottom,transparent,rgba(47,54,64,.28) 40%,transparent)}
+
+.toolbar{
+  position:sticky;top:74px;z-index:40;
+  padding:0;border-radius:var(--r-lg);margin-bottom:clamp(20px,2.4vw,30px);
+  background:rgba(23,28,33,.9);border:1px solid var(--line);
+  backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);
+  box-shadow:0 22px 60px -42px #000;
+  transition:box-shadow .4s,border-color .4s;
+}
+/* Верхняя строка — всегда одна, фиксированной высоты */
+.toolbar__bar{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;min-height:60px;
+}
+.search{position:relative;flex:1 1 160px;min-width:0}
+.search svg{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;stroke:var(--muted-2);fill:none;stroke-width:1.8;pointer-events:none;
+}
+.search input{
+  width:100%;padding:11px 40px 11px 42px;border-radius:999px;
+  background:rgba(255,255,255,.05);border:1px solid transparent;
+  color:var(--text);font-size:14px;transition:border-color .3s,background .3s;
+}
+.search input::placeholder{color:var(--muted-2)}
+.search input:focus{outline:none;border-color:rgba(255,196,0,.5);background:rgba(255,255,255,.08)}
+.search__clear{
+  position:absolute;right:7px;top:50%;transform:translateY(-50%);
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  color:var(--muted);font-size:15px;opacity:0;pointer-events:none;transition:opacity .25s,background .25s;
+}
+.search.has-value .search__clear{opacity:1;pointer-events:auto}
+.search__clear:hover{background:rgba(255,255,255,.1);color:var(--text)}
+
+/* Кнопка «Фильтры» */
+.filter-toggle{
+  display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;
+  padding:11px 16px;border-radius:999px;font-size:13.5px;font-weight:700;
+  color:var(--text);border:1px solid var(--line-strong);
+  background:rgba(255,255,255,.045);
+  transition:background .3s,border-color .3s,color .3s;
+}
+.filter-toggle:hover{background:rgba(255,255,255,.1);border-color:var(--sun)}
+.filter-toggle[aria-expanded="true"]{
+  background:var(--grad);color:#241D05;border-color:transparent;
+}
+.filter-toggle__icon{
+  font-size:13px;letter-spacing:-1px;transition:transform .4s var(--ease);
+}
+.filter-toggle[aria-expanded="true"] .filter-toggle__icon{transform:rotate(90deg)}
+.filter-toggle__count{
+  display:grid;place-items:center;min-width:20px;height:20px;padding:0 5px;
+  border-radius:10px;font-size:11px;font-weight:800;
+  background:var(--sun);color:#241D05;
+  transform:scale(0);transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.filter-toggle__count.is-on{transform:scale(1)}
+.filter-toggle[aria-expanded="true"] .filter-toggle__count{background:rgba(36,29,5,.22);color:#241D05}
+
+/* Выпадающая панель фильтров — оверлеем, не двигает контент */
+.filters{
+  position:absolute;left:0;right:0;top:calc(100% + 10px);
+  border-radius:var(--r-lg);padding:0;
+  background:rgba(21,26,31,.97);border:1px solid var(--line-strong);
+  backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);
+  box-shadow:0 40px 90px -40px #000;
+  opacity:0;visibility:hidden;transform:translateY(-10px) scale(.99);
+  transform-origin:top center;
+  transition:opacity .35s var(--ease),visibility .35s,transform .45s var(--ease);
+}
+.filters.is-open{opacity:1;visibility:visible;transform:none}
+.filters__inner{padding:16px;display:grid;gap:14px}
+.filters__group{display:grid;grid-template-columns:88px 1fr;gap:12px;align-items:start}
+@media (max-width:720px){.filters__group{grid-template-columns:1fr;gap:6px}}
+.filters__label{
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted-2);font-weight:700;padding-top:9px;
+}
+.filters__foot{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 16px;border-top:1px solid var(--line);
+}
+.filters__hint{font-size:12px;color:var(--muted-2)}
+
+/* Чипы */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  padding:8px 14px;border-radius:999px;font-size:12.5px;font-weight:600;
+  color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.025);
+  transition:color .3s,border-color .3s,background .3s,transform .3s var(--ease);
+  white-space:nowrap;
+}
+.chip:hover{color:var(--text);border-color:var(--line-strong);transform:translateY(-1px)}
+.chip.is-active{
+  color:#241D05;background:var(--grad);border-color:transparent;
+  box-shadow:0 8px 26px -14px rgba(255,196,0,.95);
+}
+.chips--sm .chip{padding:7px 12px;font-size:12px}
+
+/* Сортировка */
+.sort{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.sort label{display:none}
+.sort select{
+  appearance:none;background:rgba(255,255,255,.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2398A1AA' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border:1px solid var(--line);border-radius:999px;padding:11px 32px 11px 14px;
+  font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:border-color .3s;
+  max-width:150px;
+}
+.sort select:hover{border-color:var(--line-strong)}
+.sort select:focus{outline:none;border-color:var(--sun)}
+.sort select option{background:#171C21;color:var(--text)}
+
+.results-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-bottom:18px;font-size:13px;color:var(--muted-2);
+}
+.results-bar b{color:var(--sun);font-weight:700}
+.reset-link{
+  font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line-strong);
+  padding-bottom:1px;transition:color .3s,border-color .3s;
+}
+.reset-link:hover{color:var(--sun);border-color:var(--sun)}
+
+/* Сетка карточек */
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:clamp(16px,2vw,24px);
+}
+.card-slot{transition:opacity .4s var(--ease)}
+.card-slot.is-filtered-out{display:none}
+
+/* Карточка + 3D tilt */
+.card{
+  position:relative;border-radius:var(--r-lg);overflow:hidden;cursor:pointer;
+  background:linear-gradient(160deg,rgba(47,54,64,.72),rgba(23,28,33,.9));
+  border:1px solid var(--line);
+  transform-style:preserve-3d;
+  transition:border-color .4s,box-shadow .5s var(--ease);
+  will-change:transform;
+}
+.card:hover{border-color:rgba(255,196,0,.34);box-shadow:0 40px 80px -50px rgba(0,0,0,.95)}
+.card__media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--graphite)}
+.card__media img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease),filter .6s;}
+.card:hover .card__media img{transform:scale(1.07);filter:saturate(1.1) brightness(1.02)}
+.card__media::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(18,22,26,.96) 4%,rgba(18,22,26,.35) 42%,transparent 72%);
+}
+.card__badge{
+  position:absolute;top:14px;left:14px;z-index:2;
+  padding:7px 12px;border-radius:999px;font-size:10.5px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:#241D05;background:var(--grad);
+  box-shadow:0 8px 22px -12px rgba(255,196,0,.9);
+}
+.card__badge--soft{
+  left:auto;right:14px;background:rgba(18,22,26,.7);color:var(--text);
+  border:1px solid var(--line-strong);backdrop-filter:blur(10px);
+}
+.card__rating{
+  position:absolute;bottom:12px;right:14px;z-index:2;display:flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:999px;font-family:var(--font-d);font-size:12.5px;font-weight:600;
+  background:rgba(18,22,26,.72);border:1px solid var(--line-strong);backdrop-filter:blur(12px);
+}
+.card__rating svg{width:11px;height:11px;fill:var(--sun)}
+.card__body{position:relative;z-index:2;padding:0 20px 20px;margin-top:-26px}
+.card__cuisine{
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sun);
+  font-weight:700;margin-bottom:8px;
+}
+.card__title{font-family:var(--font-d);font-size:19px;font-weight:500;letter-spacing:-.02em;line-height:1.2}
+.card__meta{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.card__meta span{display:inline-flex;align-items:center;gap:5px}
+.card__meta i{font-style:normal;opacity:.55;font-size:11px}
+.card__foot{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+}
+.card__check{font-size:12.5px;color:var(--muted)}
+.card__check b{color:var(--text);font-weight:700;font-family:var(--font-d);font-size:13px}
+.card__go{
+  display:grid;place-items:center;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--line-strong);color:var(--muted);font-size:12px;
+  transition:background .35s,color .35s,transform .45s var(--ease),border-color .35s;
+}
+.card:hover .card__go{background:var(--grad);color:#241D05;border-color:transparent;transform:rotate(45deg)}
+/* блик */
+.card__glare{
+  position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .4s;
+  background:radial-gradient(340px circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.16),transparent 62%);
+}
+.card:hover .card__glare{opacity:1}
+
+.empty{
+  grid-column:1/-1;text-align:center;padding:70px 20px;border:1px dashed var(--line-strong);
+  border-radius:var(--r-lg);color:var(--muted);
+}
+.empty h4{font-family:var(--font-d);font-size:20px;color:var(--text);margin-bottom:10px;font-weight:500}
+
+/* ============================================================
+   8. POPULAR — горизонтальная карусель
+   ============================================================ */
+.popular{padding:clamp(72px,10vw,130px) 0;overflow:hidden}
+.rail{
+  display:flex;gap:clamp(14px,1.6vw,20px);
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:6px var(--pad) 26px;margin-inline:calc(var(--pad) * -1);
+  scrollbar-width:none;-ms-overflow-style:none;cursor:grab;
+}
+.rail::-webkit-scrollbar{display:none}
+.rail.is-dragging{cursor:grabbing;scroll-snap-type:none}
+.rail::after{content:'';flex:0 0 1px}
+.pcard{
+  position:relative;flex:0 0 clamp(240px,28vw,330px);scroll-snap-align:start;
+  border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);
+  background:var(--graphite);aspect-ratio:3/4;cursor:pointer;
+  transition:border-color .4s,box-shadow .5s;
+}
+.pcard:hover{border-color:rgba(255,196,0,.35);box-shadow:0 40px 70px -46px #000}
+.pcard img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform 1s var(--ease),filter .6s;
+}
+.pcard:hover img{transform:scale(1.06)}
+.pcard__shade{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,13,16,.95) 2%,rgba(10,13,16,.25) 48%,transparent 76%);
+}
+.pcard__rank{
+  position:absolute;top:14px;left:14px;
+  font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.1em;
+  padding:6px 11px;border-radius:999px;background:rgba(18,22,26,.66);
+  border:1px solid var(--line-strong);backdrop-filter:blur(10px);
+}
+.pcard__rank b{color:var(--sun)}
+.pcard__body{position:absolute;inset:auto 0 0 0;padding:18px}
+.pcard__name{font-family:var(--font-d);font-size:clamp(16px,1.7vw,20px);font-weight:500;letter-spacing:-.02em}
+.pcard__sub{margin-top:6px;font-size:12px;color:rgba(245,242,234,.62)}
+.pcard__row{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12px;color:var(--muted)}
+.pcard__row .score{
+  display:inline-flex;align-items:center;gap:5px;color:var(--sun);font-weight:700;
+  font-family:var(--font-d);font-size:12.5px;
+}
+.pcard__row .score svg{width:10px;height:10px;fill:var(--sun)}
+
+.rail-nav{display:flex;gap:8px}
+.rail-btn{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--line-strong);color:var(--text);font-size:15px;
+  transition:background .3s,color .3s,border-color .3s,transform .3s var(--ease);
+}
+.rail-btn:hover{background:var(--sun);color:#241D05;border-color:transparent;transform:scale(1.06)}
+.rail-btn:disabled{opacity:.3;pointer-events:none}
+
+/* ============================================================
+   9. ОТЗЫВЫ
+   ============================================================ */
+.reviews{position:relative;background:linear-gradient(to bottom,transparent,rgba(47,54,64,.3) 50%,transparent)}
+.reviews__grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+  gap:clamp(14px,1.8vw,22px);
+}
+.quote-card{
+  position:relative;padding:clamp(24px,2.6vw,32px);border-radius:var(--r-lg);
+  background:linear-gradient(155deg,rgba(255,255,255,.07),rgba(255,255,255,.022));
+  border:1px solid var(--line);display:flex;flex-direction:column;gap:18px;
+  transition:transform .5s var(--ease),border-color .4s,background .4s;
+}
+.quote-card:hover{transform:translateY(-6px);border-color:rgba(255,196,0,.3)}
+.quote-card__mark{
+  font-family:var(--font-i);font-size:52px;line-height:.6;color:var(--sun);opacity:.5;height:26px;
+}
+.quote-card__text{font-size:15px;line-height:1.68;color:rgba(245,242,234,.88)}
+.quote-card__user{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:16px;border-top:1px solid var(--line)}
+.avatar{
+  width:40px;height:40px;border-radius:50%;flex:0 0 auto;object-fit:cover;
+  border:1px solid var(--line-strong);background:var(--graphite);
+}
+.quote-card__name{font-size:13.5px;font-weight:700}
+.quote-card__role{font-size:11.5px;color:var(--muted-2)}
+.stars{display:inline-flex;gap:2px}
+.stars svg{width:12px;height:12px;fill:var(--sun)}
+.stars svg.off{fill:rgba(255,255,255,.16)}
+.quote-card__top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.quote-card__place{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
+
+/* ============================================================
+   10. МОДАЛЬНОЕ ОКНО ЗАВЕДЕНИЯ
+   ============================================================ */
+.modal{
+  position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
+  padding:clamp(0px,2.5vw,32px);
+  opacity:0;visibility:hidden;transition:opacity .45s var(--ease),visibility .45s;
+}
+.modal.is-open{opacity:1;visibility:visible}
+.modal__backdrop{
+  position:absolute;inset:0;background:rgba(8,10,13,.82);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+/* Панель ограничена по высоте — каталог остаётся виден по краям */
+.modal__panel{
+  position:relative;width:min(1120px,100%);height:min(86vh,860px);max-height:86vh;
+  border-radius:clamp(18px,2vw,26px);overflow:hidden;
+  background:linear-gradient(170deg,#1B2127,#14181D 60%);
+  border:1px solid var(--line-strong);
+  box-shadow:0 60px 120px -60px #000;
+  transform:translateY(28px) scale(.97);opacity:0;
+  transition:transform .55s var(--ease),opacity .45s var(--ease);
+  display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+}
+.modal.is-open .modal__panel{transform:none;opacity:1}
+
+/* Левая колонка — галерея, не скроллится */
+.modal__media{
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  border-right:1px solid var(--line);background:#101418;
+}
+/* Правая колонка — меню и отзывы, свой скролл */
+.modal__scroll{
+  overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;
+  padding:clamp(20px,2.4vw,32px);
+}
+.modal__scroll::-webkit-scrollbar{width:6px}
+.modal__scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:99px}
+.modal__close{
+  position:absolute;top:14px;right:14px;z-index:6;width:40px;height:40px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(18,22,26,.75);
+  border:1px solid var(--line-strong);backdrop-filter:blur(14px);
+  font-size:16px;color:var(--text);transition:background .3s,transform .4s var(--ease),color .3s;
+}
+.modal__close:hover{background:var(--sun);color:#241D05;transform:rotate(90deg)}
+
+/* Галерея */
+.gallery{position:relative;display:flex;flex-direction:column;height:100%}
+.gallery__main{
+  position:relative;flex:1 1 auto;min-height:0;background:var(--graphite);overflow:hidden;
+}
+.gallery__main img{width:100%;height:100%;object-fit:cover;animation:fadeIn .6s var(--ease)}
+@keyframes fadeIn{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
+.gallery__shade{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(16,20,24,.97) 0%,rgba(16,20,24,.45) 38%,transparent 68%);
+}
+.gallery__head{position:absolute;inset:auto 0 0 0;padding:clamp(16px,2.2vw,26px)}
+.gallery__title{
+  font-family:var(--font-d);font-size:clamp(1.4rem,2.4vw,2.1rem);
+  font-weight:500;line-height:1;letter-spacing:-.04em;
+}
+.gallery__meta{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;
+  margin-top:10px;font-size:12.5px;color:rgba(245,242,234,.7);
+}
+.gallery__meta .sep{width:3px;height:3px;border-radius:50%;background:var(--muted-2)}
+/* Миниатюры — полосой под фото */
+.gallery__thumbs{
+  flex:0 0 auto;display:flex;gap:7px;padding:10px clamp(16px,2.2vw,26px) 14px;
+  overflow-x:auto;scrollbar-width:none;background:rgba(0,0,0,.28);
+}
+.gallery__thumbs::-webkit-scrollbar{display:none}
+.gthumb{
+  flex:0 0 64px;height:46px;border-radius:8px;overflow:hidden;opacity:.45;
+  border:1px solid transparent;transition:opacity .3s,border-color .3s,transform .3s var(--ease);
+}
+.gthumb img{width:100%;height:100%;object-fit:cover}
+.gthumb:hover{opacity:.85;transform:translateY(-2px)}
+.gthumb.is-active{opacity:1;border-color:var(--sun)}
+
+/* Тело правой колонки */
+.mbody{display:grid;gap:clamp(22px,2.6vw,32px)}
+
+.mtitle{font-family:var(--font-d);font-size:clamp(1.5rem,2.6vw,2.2rem);font-weight:500;line-height:1.02;letter-spacing:-.04em}
+.mtitle-sub{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:12px;font-size:12.5px;color:var(--muted)}
+.mtitle-sub .sep{width:3px;height:3px;border-radius:50%;background:var(--muted-2)}
+.mdesc{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.65;max-width:52ch}
+
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{
+  padding:5px 11px;border-radius:999px;font-size:11px;color:var(--muted);
+  border:1px solid var(--line);background:rgba(255,255,255,.03);
+}
+
+.block-title{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  font-family:var(--font-d);font-size:12.5px;font-weight:500;
+}
+.block-title span.num{
+  display:grid;place-items:center;width:20px;height:20px;border-radius:50%;
+  background:var(--sun-dim);color:var(--sun);font-size:9.5px;font-weight:700;
+}
+.block-title::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* Меню */
+.menu-list{display:grid;gap:2px}
+.menu-item{
+  display:grid;grid-template-columns:1fr auto;gap:6px 16px;padding:14px 0;
+  border-bottom:1px dashed rgba(255,255,255,.08);
+  transition:padding-left .35s var(--ease),background .35s;
+}
+.menu-item:last-child{border-bottom:0}
+.menu-item:hover{padding-left:10px}
+.menu-item__name{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.menu-item__hit{
+  font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:#241D05;background:var(--sun);padding:3px 7px;border-radius:5px;
+}
+.menu-item__desc{grid-column:1;font-size:12.5px;color:var(--muted-2);line-height:1.5;max-width:46ch}
+.menu-item__price{
+  grid-row:1/3;align-self:center;font-family:var(--font-d);font-size:14.5px;font-weight:500;
+  color:var(--sun);white-space:nowrap;
+}
+
+/* Средний чек — выделенный блок */
+.check-card{
+  position:relative;overflow:hidden;margin-top:22px;
+  padding:22px;border-radius:var(--r-md);
+  background:linear-gradient(140deg,rgba(255,196,0,.16),rgba(255,157,0,.05));
+  border:1px solid rgba(255,196,0,.32);
+}
+.check-card::before{
+  content:'';position:absolute;top:-40%;right:-10%;width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,196,0,.28),transparent 68%);filter:blur(18px);
+}
+.check-card__label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,224,102,.9);font-weight:700}
+.check-card__value{
+  display:flex;align-items:baseline;gap:6px;margin-top:8px;
+  font-family:var(--font-d);font-size:clamp(1.7rem,3vw,2.2rem);font-weight:600;
+  letter-spacing:-.04em;line-height:1;
+}
+.check-card__value small{font-size:.42em;font-weight:500;color:rgba(245,242,234,.6);letter-spacing:0}
+.check-card__note{margin-top:10px;font-size:12px;color:rgba(245,242,234,.6);line-height:1.5}
+
+/* Блок контактов — сетка 2×2 */
+.info-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;
+  border-radius:var(--r-md);overflow:hidden;
+  background:var(--line);border:1px solid var(--line);
+}
+.info-cell{
+  padding:14px 16px;background:rgba(23,28,33,.92);
+  transition:background .3s;
+}
+.info-cell:hover{background:rgba(255,196,0,.05)}
+.info-cell__label{
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted-2);font-weight:700;margin-bottom:6px;
+}
+.info-cell__value{font-size:13px;font-weight:600;line-height:1.4;color:rgba(245,242,234,.94)}
+.info-cell__value a{border-bottom:1px solid var(--line-strong);transition:color .3s,border-color .3s}
+.info-cell__value a:hover{color:var(--sun);border-color:var(--sun)}
+.info-cell__sub{font-size:11px;color:var(--muted-2);margin-top:4px}
+.info-cell .stars svg{width:11px;height:11px;vertical-align:-1px}
+.info-row{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.055);font-size:13px}
+.info-row:last-child{border-bottom:0;padding-bottom:0}
+.info-row:first-child{padding-top:0}
+.info-row__icon{
+  flex:0 0 30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  background:var(--sun-dim);color:var(--sun);font-size:12px;
+}
+.info-row__label{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);margin-bottom:3px}
+.info-row__value{color:rgba(245,242,234,.92);line-height:1.45;font-weight:500}
+.info-row__value a{border-bottom:1px solid var(--line-strong);transition:color .3s,border-color .3s}
+.info-row__value a:hover{color:var(--sun);border-color:var(--sun)}
+
+.rating-big{display:flex;align-items:center;gap:16px}
+.rating-big__num{
+  font-family:var(--font-d);font-size:44px;font-weight:600;letter-spacing:-.05em;line-height:1;
+  background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.rating-big__meta{font-size:12px;color:var(--muted-2);margin-top:6px}
+.rating-big .stars svg{width:13px;height:13px}
+
+/* Отзывы в модалке */
+.review-item{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.review-item:last-child{border-bottom:0;padding-bottom:0}
+.review-item__top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.review-item__name{font-size:13.5px;font-weight:700}
+.review-item__date{font-size:11px;color:var(--muted-2);margin-top:2px}
+.review-item__text{font-size:13.5px;line-height:1.65;color:rgba(245,242,234,.78)}
+.review-item .stars{margin-left:auto}
+
+/* ============================================================
+   11. FOOTER
+   ============================================================ */
+.footer{
+  position:relative;padding:clamp(60px,8vw,110px) 0 32px;
+  border-top:1px solid var(--line);overflow:hidden;
+}
+.footer::before{
+  content:'';position:absolute;top:-220px;left:50%;transform:translateX(-50%);
+  width:min(900px,120vw);height:420px;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,196,0,.13),transparent 66%);filter:blur(40px);
+}
+.footer__top{
+  position:relative;display:grid;gap:clamp(32px,5vw,64px);
+  grid-template-columns:1fr;margin-bottom:clamp(44px,6vw,72px);
+}
+@media (min-width:860px){.footer__top{grid-template-columns:1.15fr .85fr}}
+.footer__headline{
+  font-family:var(--font-d);font-weight:500;font-size:clamp(2rem,4.6vw,3.6rem);
+  line-height:.98;letter-spacing:-.04em;
+}
+.footer__headline em{font-family:var(--font-i);font-style:italic;font-weight:400}
+.footer__sub{margin-top:16px;color:var(--muted);font-size:14.5px;max-width:40ch;line-height:1.65}
+
+.subscribe{display:flex;flex-direction:column;gap:12px}
+.field{
+  position:relative;display:flex;align-items:center;gap:8px;
+  border-radius:999px;border:1px solid var(--line-strong);
+  background:rgba(255,255,255,.045);padding:5px 5px 5px 20px;
+  transition:border-color .3s,background .3s,box-shadow .3s;
+}
+.field:focus-within{border-color:rgba(255,196,0,.6);background:rgba(255,255,255,.07);box-shadow:0 0 0 4px rgba(255,196,0,.08)}
+.field input{flex:1;min-width:0;background:none;border:0;padding:12px 0;font-size:14.5px;color:var(--text)}
+.field input::placeholder{color:var(--muted-2)}
+.field input:focus{outline:none}
+.field .btn{padding:13px 22px;font-size:13.5px;flex:0 0 auto}
+.subscribe__note{font-size:11.5px;color:var(--muted-2);padding-left:6px}
+.subscribe__note.is-ok{color:var(--sun)}
+
+.footer__cols{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:28px;
+  padding-top:clamp(28px,4vw,40px);border-top:1px solid var(--line);
+}
+.footer__col h5{
+  font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);
+  font-weight:700;margin:0 0 14px;
+}
+.footer__col a,.footer__col p{display:block;font-size:13.5px;color:var(--muted);margin-bottom:9px;transition:color .3s,transform .3s var(--ease)}
+.footer__col a:hover{color:var(--sun);transform:translateX(3px)}
+.footer__bottom{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:14px;padding-top:clamp(26px,4vw,38px);margin-top:clamp(26px,4vw,38px);
+  border-top:1px solid var(--line);font-size:12px;color:var(--muted-2);
+}
+.footer__socials{display:flex;gap:8px}
+.social{
+  width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:700;
+  transition:background .3s,color .3s,border-color .3s,transform .3s var(--ease);
+}
+.social:hover{background:var(--sun);color:#241D05;border-color:transparent;transform:translateY(-2px)}
+
+/* Toast */
+.toast{
+  position:fixed;left:50%;bottom:32px;transform:translate(-50%,140%);z-index:1500;
+  padding:14px 22px;border-radius:999px;font-size:13.5px;font-weight:600;
+  background:rgba(24,29,35,.95);border:1px solid rgba(255,196,0,.4);
+  backdrop-filter:blur(16px);box-shadow:0 22px 60px -30px #000;
+  transition:transform .6s var(--ease),opacity .4s;opacity:0;
+}
+.toast.is-shown{transform:translate(-50%,0);opacity:1}
+
+/* ============================================================
+   12. АДАПТИВ
+   ============================================================ */
+@media (max-width:1024px){
+  .nav__links{display:none}
+  .nav__burger{display:grid}
+  .nav > .btn{display:none}
+  .hero{padding-top:132px}
+  .toolbar{top:60px}
+}
+@media (max-width:760px){
+  .toolbar__bar{flex-wrap:wrap;row-gap:8px}
+  .search{flex:1 1 100%;order:1}
+  .filter-toggle{order:2;flex:1 1 46%;justify-content:center;padding-inline:12px}
+  .sort{order:3;flex:1 1 46%}
+  .sort select{width:100%;max-width:none}
+  .hero{min-height:auto;padding:124px 0 64px}
+  .hero__float{display:none}
+  .scroll-hint{display:none}
+  .hero__stats{gap:26px 34px}
+  .section{padding:clamp(56px,11vw,80px) 0}
+  .toolbar{position:static;padding:13px;border-radius:var(--r-md)}
+  .sort{margin-left:0;width:100%}
+  .sort select{flex:1;width:100%}
+  .chips{gap:6px}
+  .chip{padding:8px 13px;font-size:12px}
+  .grid{grid-template-columns:1fr;gap:16px}
+  .modal{padding:0}
+  .modal__panel{
+    border-radius:0;height:100dvh;max-height:100dvh;
+    grid-template-columns:1fr;grid-template-rows:auto 1fr;
+  }
+  .modal__media{border-right:0;border-bottom:1px solid var(--line);height:auto}
+  .gallery{height:auto}
+  .gallery__main{flex:0 0 auto;aspect-ratio:16/10}
+  .info-grid{grid-template-columns:1fr}
+  .footer__bottom{flex-direction:column;align-items:flex-start}
+  .ticker__track{animation-duration:26s}
+}
+@media (max-width:420px){
+  .hero-title{font-size:clamp(2.6rem,13vw,4rem)}
+  .btn{padding:15px 24px;font-size:14px;width:100%}
+  .hero__actions .btn{width:100%}
+}
+
+/* Тонкая полоса прогресса скролла */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:100%;z-index:80;
+  background:var(--grad);transform:scaleX(0);transform-origin:left;pointer-events:none;
+}
+</style>
+</head>
+<body>
+<!-- ===== Прелоадер ===== -->
+<div class="preloader" id="preloader">
+  <div class="preloader__inner">
+    <div class="preloader__mark">Taste Guide</div>
+    <div class="preloader__bar"><span id="preBar"></span></div>
+    <div class="preloader__num" id="preNum">00</div>
+  </div>
+</div>
+
+<!-- ===== Зерно / курсор / прогресс ===== -->
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ===== Навигация ===== -->
+<header class="nav" id="nav">
+  <a href="#top" class="logo" data-cursor="hover">
+    <span class="logo__mark">T</span>
+    <span>TASTE<span class="dot">.</span></span>
+  </a>
+
+  <nav class="nav__links">
+    <a href="#catalog" data-cursor="hover">Каталог</a>
+    <a href="#popular" data-cursor="hover">Популярное</a>
+    <a href="#reviews" data-cursor="hover">Отзывы</a>
+    <a href="#subscribe" data-cursor="hover">Подписка</a>
+  </nav>
+
+  <a href="#catalog" class="btn btn--sm" data-magnetic data-cursor="hover">
+    Найти место <span class="btn__icon">↗</span>
+  </a>
+
+  <button class="nav__burger" id="burger" aria-label="Меню" aria-expanded="false">
+    <span></span>
+  </button>
+</header>
+
+<!-- Мобильное меню -->
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#catalog">Каталог</a></li>
+    <li><a href="#popular">Популярное</a></li>
+    <li><a href="#reviews">Отзывы</a></li>
+    <li><a href="#subscribe">Подписка</a></li>
+  </ul>
+</div>
+
+<main id="top">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__mesh" aria-hidden="true"></div>
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero__vignette" aria-hidden="true"></div>
+
+    <div class="container">
+      <div class="eyebrow" data-hero-fade>
+        <span class="dot"></span> Гид по гастрономии · независимый обзор
+      </div>
+
+      <h1 class="hero-title" id="heroTitle">
+        <span class="line" data-split>Вкус,</span>
+        <span class="line" data-split>который</span>
+        <span class="line" data-split><span class="grad-text">помнят</span></span>
+      </h1>
+
+      <p class="hero__lead" data-hero-fade>
+        Двенадцать мест, ради которых стоит выйти из дома. Мы едим, пьём и спорим
+        за вас — <strong>без рекламы и без звёзд от самих заведений</strong>.
+      </p>
+
+      <div class="hero__actions" data-hero-fade>
+        <a href="#catalog" class="btn" data-magnetic data-cursor="hover">
+          Смотреть подборку <span class="btn__icon">↗</span>
+        </a>
+        <a href="#popular" class="btn btn--ghost" data-magnetic data-cursor="hover">
+          Популярное сейчас <span class="btn__icon">↓</span>
+        </a>
+      </div>
+
+      <div class="hero__stats" id="heroStats">
+        <div class="stat">
+          <div class="stat__value"><span data-count="12">0</span></div>
+          <div class="stat__label">заведений в гиде</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value"><span data-count="248">0</span><span class="suffix">+</span></div>
+          <div class="stat__label">проверенных отзывов</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value"><span data-count="4.7" data-decimals="1">0</span></div>
+          <div class="stat__label">средняя оценка</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value"><span data-count="9">0</span><span class="suffix">лет</span></div>
+          <div class="stat__label">ходим по одним адресам</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Плавающая карточка-рейтинг -->
+    <aside class="hero__float glass" data-hero-fade>
+      <div class="row">
+        <span class="name">Сегодня в топе</span>
+        <span class="score">4.9</span>
+      </div>
+      <div class="meta">Kokoko — современная русская кухня</div>
+      <div class="line"></div>
+      <div class="quote">«Лучший ужин за год. Без вариантов».</div>
+    </aside>
+
+    <div class="scroll-hint" aria-hidden="true">
+      <span>Листайте</span>
+      <i></i>
+    </div>
+  </section>
+
+  <!-- ===== Бегущая строка ===== -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track" id="tickerTrack"></div>
+  </div>
+
+  <!-- ===== КАТАЛОГ ===== -->
+  <section class="section catalog" id="catalog">
+    <div class="container">
+
+      <div class="section__head">
+        <div>
+          <div class="section__kicker" data-reveal>Каталог</div>
+          <h2 class="section__title" data-reveal>
+            Выбирайте <em>по вкусу</em>
+          </h2>
+        </div>
+        <p class="section__desc" data-reveal data-delay="1">
+          Фильтруйте по типу, кухне, чеку и рейтингу. Всё, что видно в карточке,
+          проверено нами лично — от размера порции до скорости официантов.
+        </p>
+      </div>
+
+      <!-- Панель фильтров -->
+      <div class="toolbar" data-reveal id="toolbar">
+        <div class="toolbar__bar">
+          <div class="search" id="searchWrap">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input type="text" id="searchInput" placeholder="Название, кухня или блюдо…"
+                   autocomplete="off" aria-label="Поиск заведений">
+            <button class="search__clear" id="searchClear" aria-label="Очистить поиск">✕</button>
+          </div>
+
+          <button class="filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filtersPanel">
+            <span class="filter-toggle__icon">⚟</span>
+            <span class="filter-toggle__text">Фильтры</span>
+            <span class="filter-toggle__count" id="filterCount">0</span>
+          </button>
+
+          <div class="sort">
+            <label for="sortSelect">Сортировка</label>
+            <select id="sortSelect">
+              <option value="rating">По рейтингу</option>
+              <option value="check-asc">Дешевле</option>
+              <option value="check-desc">Дороже</option>
+              <option value="name">А–Я</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filters" id="filtersPanel">
+          <div class="filters__inner">
+            <div class="filters__group">
+              <span class="filters__label">Тип</span>
+              <div class="chips" id="typeFilters">
+                <button class="chip is-active" data-type="all">Всё</button>
+                <button class="chip" data-type="ресторан">Рестораны</button>
+                <button class="chip" data-type="кафе">Кафе</button>
+                <button class="chip" data-type="бар">Бары</button>
+              </div>
+            </div>
+
+            <div class="filters__group">
+              <span class="filters__label">Кухня</span>
+              <div class="chips chips--sm" id="cuisineFilters"></div>
+            </div>
+
+            <div class="filters__group">
+              <span class="filters__label">Чек</span>
+              <div class="chips chips--sm" id="priceFilters">
+                <button class="chip is-active" data-price="all">Любой</button>
+                <button class="chip" data-price="low">до ₽1 500</button>
+                <button class="chip" data-price="mid">₽1 500–3 000</button>
+                <button class="chip" data-price="high">от ₽3 000</button>
+              </div>
+            </div>
+
+            <div class="filters__group">
+              <span class="filters__label">Рейтинг</span>
+              <div class="chips chips--sm" id="ratingFilters">
+                <button class="chip is-active" data-rating="0">Любой</button>
+                <button class="chip" data-rating="4">4.0+</button>
+                <button class="chip" data-rating="4.5">4.5+</button>
+                <button class="chip" data-rating="4.8">4.8+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="filters__foot">
+            <span class="filters__hint" id="filtersHint">Выберите параметры — сетка обновится сразу</span>
+            <button class="reset-link" id="resetFilters">Сбросить</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-bar">
+        <span>Найдено: <b id="resultsCount">12</b> из 12</span>
+        <button class="reset-link" id="resetFilters">Сбросить фильтры</button>
+      </div>
+
+      <!-- Сетка карточек -->
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <!-- ===== ПОПУЛЯРНОЕ СЕЙЧАС ===== -->
+  <section class="popular" id="popular">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <div class="section__kicker" data-reveal>Тренды недели</div>
+          <h2 class="section__title" data-reveal>Популярное <em>сейчас</em></h2>
+        </div>
+        <div class="rail-nav" data-reveal data-delay="1">
+          <button class="rail-btn" id="railPrev" aria-label="Назад">←</button>
+          <button class="rail-btn" id="railNext" aria-label="Вперёд">→</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rail" id="rail"></div>
+  </section>
+
+  <!-- ===== ОТЗЫВЫ ===== -->
+  <section class="section reviews" id="reviews">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <div class="section__kicker" data-reveal>Голоса</div>
+          <h2 class="section__title" data-reveal>Что говорят <em>люди</em></h2>
+        </div>
+        <p class="section__desc" data-reveal data-delay="1">
+          Мы не платим за отзывы и не удаляем неудобные. Ниже — то, что чаще всего
+          повторяли наши читатели за последний месяц.
+        </p>
+      </div>
+
+      <div class="reviews__grid" id="reviewsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER / ПОДПИСКА ===== -->
+  <footer class="footer" id="subscribe">
+    <div class="container">
+      <div class="footer__top">
+        <div data-reveal>
+          <h2 class="footer__headline">
+            Одно письмо<br>в четверг. <em>Всё</em>.
+          </h2>
+          <p class="footer__sub">
+            Новые места, закрытия, честные впечатления и один рецепт от шефа.
+            Без рекламных интеграций — мы их просто не берём.
+          </p>
+        </div>
+
+        <div data-reveal data-delay="1">
+          <form class="subscribe" id="subscribeForm" novalidate>
+            <div class="field">
+              <input type="email" id="emailInput" placeholder="your@email.com" aria-label="Email для подписки" required>
+              <button type="submit" class="btn" data-cursor="hover">
+                Подписаться <span class="btn__icon">↗</span>
+              </button>
+            </div>
+            <div class="subscribe__note" id="subscribeNote">
+              Никакого спама. Отписка — одним кликом.
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer__cols">
+        <div class="footer__col">
+          <h5>Гид</h5>
+          <a href="#catalog">Рестораны</a>
+          <a href="#catalog">Кафе</a>
+          <a href="#catalog">Бары</a>
+          <a href="#popular">Популярное</a>
+        </div>
+        <div class="footer__col">
+          <h5>О проекте</h5>
+          <a href="#">Как мы оцениваем</a>
+          <a href="#">Команда</a>
+          <a href="#">Сотрудничество</a>
+        </div>
+        <div class="footer__col">
+          <h5>Контакты</h5>
+          <p>Работаем удалённо<br>по всей России</p>
+          <a href="/cdn-cgi/l/email-protection#771f1e3703160403125910021e1312"><span class="__cf_email__" data-cfemail="096160497d687a7d6c276e7c606d6c">[email&#160;protected]</span></a>
+        </div>
+        <div class="footer__col">
+          <h5>Соцсети</h5>
+          <div class="footer__socials">
+            <a href="#" class="social" aria-label="Telegram">TG</a>
+            <a href="#" class="social" aria-label="VK">VK</a>
+            <a href="#" class="social" aria-label="Instagram">IG</a>
+            <a href="#" class="social" aria-label="YouTube">YT</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span>© 2026 TASTE. Все права защищены.</span>
+        <span>Сделано с любовью к еде и вниманием к деталям.</span>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<!-- ===== МОДАЛЬНОЕ ОКНО ЗАВЕДЕНИЯ ===== -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel">
+    <button class="modal__close" data-modal-close aria-label="Закрыть">✕</button>
+    <div class="modal__media" id="modalMedia"></div>
+    <div class="modal__scroll" id="modalScroll"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== Библиотеки ===== -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+<script>
+/* ============================================================
+   ДАННЫЕ О ЗАВЕДЕНИЯХ
+   В реальном проекте это был бы ответ API — структура готова к этому.
+   ============================================================ */
+
+const U = (id, w = 1200) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+
+const PLACES = [
+  {
+    id: 'kokoko',
+    name: 'Kokoko',
+    type: 'ресторан',
+    cuisine: 'Современная русская',
+    district: 'Центр',
+    rating: 4.9,
+    reviewsCount: 214,
+    check: 3800,
+    price: 'high',
+    tags: ['Авторская кухня', 'Дегустационное меню', 'Ужин'],
+    short: 'Северные продукты, открытый огонь и дегустационное меню из семи подач.',
+    address: 'ул. Садовая, 12',
+    phone: '+7 (800) 100-12-30',
+    hours: 'Пн–Вс · 18:00 — 23:30',
+    closed: 'Без выходных',
+    images: [
+      U('photo-1517248135467-4c7edcad34c4'),
+      U('photo-1543007630-9710e4a00a20'),
+      U('photo-1414235077428-338989a2e8c0'),
+      U('photo-1504674900247-0877df9cc836'),
+      U('photo-1517840901100-8179e982acb7')
+    ],
+    menu: [
+      { name: 'Мурманский ёж с кремом из икры', desc: 'Морской ёж, сливочный крем, чипс из нори', price: 890, hit: true },
+      { name: 'Щи из щавеля с копчёной сметаной', desc: 'Щавель, копчёности из курицы, яйцо пашот', price: 640 },
+      { name: 'Сиг на угле с берёзовым соусом', desc: 'Сиг, берёзовый сок, печёный лук', price: 1420 },
+      { name: 'Оленина с брусникой и трюфельным пюре', desc: 'Карельская оленина, брусника, картофель', price: 1980, hit: true }
+    ],
+    reviews: [
+      { name: 'Анна К.', date: '12 октября 2026', rating: 5, text: 'Брали дегустационный сет. Семь подач пролетели незаметно — каждое блюдо со своей идеей, ни одного «для галочки». Особенно запомнился сиг на угле.' },
+      { name: 'Дмитрий П.', date: '3 октября 2026', rating: 5, text: 'Лучший ужин за год. Сервис без суеты и без пафоса. Бронь держали, столик дали у окна, как просили.' },
+      { name: 'Ольга М.', date: '24 сентября 2026', rating: 4, text: 'Еда отличная, но зал шумный — на двоих приходилось повышать голос. Для романтического ужина не идеально.' }
+    ]
+  },
+  {
+    id: 'sever-metropol',
+    name: 'Северянин',
+    type: 'ресторан',
+    cuisine: 'Русская',
+    district: 'Старый город',
+    rating: 4.7,
+    reviewsCount: 186,
+    check: 2600,
+    price: 'mid',
+    tags: ['Печь на дровах', 'Семейный', 'Русская классика'],
+    short: 'Печь на дровах, домашние настойки и классика, которую приятно узнавать.',
+    address: 'ул. Тихая, 44',
+    phone: '+7 (800) 100-77-04',
+    hours: 'Пн–Вс · 12:00 — 00:00',
+    closed: 'Без выходных',
+    images: [
+      U('photo-1552566626-52f8b828add9'),
+      U('photo-1544025162-d76694265947'),
+      U('photo-1414235077428-338989a2e8c0'),
+      U('photo-1504674900247-0877df9cc836'),
+      U('photo-1550966871-3ed3cdb5ed0c')
+    ],
+    menu: [
+      { name: 'Пельмени с телятиной', desc: 'Ручная лепка, сметана, укроп', price: 520, hit: true },
+      { name: 'Борщ с пампушками и салом', desc: 'Наваристый, со сметаной и чесноком', price: 480 },
+      { name: 'Утка в печи с яблоками', desc: 'Половина утки, печёные яблоки, соус', price: 1240 },
+      { name: 'Медовик по-домашнему', desc: 'Восемь коржей, сметанный крем', price: 390 }
+    ],
+    reviews: [
+      { name: 'Ирина С.', date: '18 октября 2026', rating: 5, text: 'Пельмени — как у бабушки, только ровнее. Порции огромные, чек при этом приятный.' },
+      { name: 'Максим Т.', date: '9 октября 2026', rating: 4, text: 'Хорошее место для семейного обеда. В выходные без брони лучше не приходить — очередь.' },
+      { name: 'Светлана Р.', date: '1 октября 2026', rating: 5, text: 'Медовик стоит отдельного визита. Взяли с собой целый, не пожалели.' }
+    ]
+  },
+  {
+    id: 'tsveti',
+    name: 'Цветы',
+    type: 'кафе',
+    cuisine: 'Завтраки',
+    district: 'Арт-квартал',
+    rating: 4.8,
+    reviewsCount: 312,
+    check: 1200,
+    price: 'low',
+    tags: ['Завтраки весь день', 'Спешелти-кофе', 'Веранда'],
+    short: 'Завтраки с 8 утра до вечера: круассаны, яйца бенедикт и лучший флэт уайт.',
+    address: 'ул. Виноградная, 21',
+    phone: '+7 (800) 100-33-19',
+    hours: 'Пн–Вс · 08:00 — 21:00',
+    closed: 'Без выходных',
+    images: [
+      U('photo-1501339847302-ac426a4a7cbb'),
+      U('photo-1559339352-11d035aa65de'),
+      U('photo-1445116572660-236099ec97a0'),
+      U('photo-1442512595331-e89e73853f31'),
+      U('photo-1555507036-ab1f4038808a')
+    ],
+    menu: [
+      { name: 'Яйца бенедикт с лососем', desc: 'Бриошь, слабосолёный лосось, голландез', price: 690, hit: true },
+      { name: 'Круассан с миндальным кремом', desc: 'Печём каждое утро в 6:00', price: 320 },
+      { name: 'Сырники с вишнёвым вареньем', desc: 'Из фермерского творога, по-домашнему', price: 450 },
+      { name: 'Флэт уайт', desc: 'Спешелти-зерно собственной обжарки', price: 290, hit: true }
+    ],
+    reviews: [
+      { name: 'Катя В.', date: '20 октября 2026', rating: 5, text: 'Приходим по субботам уже полгода. Бенедикт — эталон, кофе не горчит. Персонал запоминает заказ.' },
+      { name: 'Артём Л.', date: '14 октября 2026', rating: 5, text: 'Редкое кафе, где в 9 утра нет толпы. Веранда летом — отдельное удовольствие.' },
+      { name: 'Юля Н.', date: '5 октября 2026', rating: 4, text: 'Всё вкусно, но мест мало. В полдень в выходные ждали минут пятнадцать.' }
+    ]
+  },
+  {
+    id: 'nebny-bar',
+    name: 'Небный',
+    type: 'бар',
+    cuisine: 'Коктейли',
+    district: 'Центр',
+    rating: 4.9,
+    reviewsCount: 178,
+    check: 2200,
+    price: 'mid',
+    tags: ['Авторские коктейли', 'Бармены-финалисты', 'До 2:00'],
+    short: 'Бар на 24 места, где коктейли собирают как блюда — с гарниром и историей.',
+    address: 'пер. Гражданский, 9',
+    phone: '+7 (800) 100-88-21',
+    hours: 'Вт–Сб · 18:00 — 02:00',
+    closed: 'Вс, Пн — выходные',
+    images: [
+      U('photo-1514933651103-005eec06c04b'),
+      U('photo-1470337458703-46ad1756a187'),
+      U('photo-1536935338788-846bb9981813'),
+      U('photo-1521017432531-fbd92d768814'),
+      U('photo-1424847651672-bf20a4b0982b')
+    ],
+    menu: [
+      { name: 'Северный сауэр', desc: 'Джин, облепиха, лимон, белок', price: 780, hit: true },
+      { name: 'Дымный сад', desc: 'Бурбон, копчёный чай, херес', price: 850 },
+      { name: 'Тарт с брусникой', desc: 'Безалкогольный: брусника, тоник, розмарин', price: 520 },
+      { name: 'Сет из 4 коктейлей', desc: 'Мини-подачи на выбор бармена', price: 2400, hit: true }
+    ],
+    reviews: [
+      { name: 'Ника Ф.', date: '19 октября 2026', rating: 5, text: 'Бармен расспросил про вкусы и собрал коктейль, которого нет в меню. Такое запоминается.' },
+      { name: 'Егор Д.', date: '11 октября 2026', rating: 5, text: 'Лучший сауэр в городе, спорить не буду. Мест мало — бронируйте заранее.' },
+      { name: 'Полина А.', date: '28 сентября 2026', rating: 4, text: 'Атмосфера отличная, но музыка громкая — для разговоров не очень.' }
+    ]
+  },
+  {
+    id: 'pastaio',
+    name: 'Pastaio',
+    type: 'ресторан',
+    cuisine: 'Итальянская',
+    district: 'Центр',
+    rating: 4.6,
+    reviewsCount: 245,
+    check: 2400,
+    price: 'mid',
+    tags: ['Свежая паста', 'Открытая кухня', 'Вино по бокалам'],
+    short: 'Паста ручной работы, тесто раскатывают в зале — видно от каждого столика.',
+    address: 'ул. Рубинштейна, 15',
+    phone: '+7 (800) 100-40-11',
+    hours: 'Пн–Вс · 12:00 — 23:00',
+    closed: 'Без выходных',
+    images: [
+      U('photo-1551183053-bf91a1d81141'),
+      U('photo-1565299624946-b28f40a0ae38'),
+      U('photo-1481833761820-0509d3217039'),
+      U('photo-1473093295043-cdd812d0e601'),
+      U('photo-1546069901-ba9599a7e63c')
+    ],
+    menu: [
+      { name: 'Качо-э-пепе', desc: 'Тоннарелли, пекорино, чёрный перец', price: 690, hit: true },
+      { name: 'Паппарделле с телячьим рагу', desc: 'Рагу 6 часов, пармезан', price: 890 },
+      { name: 'Буррата с томатами', desc: 'Буррата, томаты черри, базилик', price: 740 },
+      { name: 'Тирамису', desc: 'Классический, на савоярди', price: 420, hit: true }
+    ],
+    reviews: [
+      { name: 'Мария Г.', date: '16 октября 2026', rating: 5, text: 'Качо-э-пепе простой до неприличия и при этом идеальный. Порции небольшие, но качество на уровне.' },
+      { name: 'Сергей К.', date: '7 октября 2026', rating: 4, text: 'Вкусно, но шумно из-за открытой кухни. И столы близко друг к другу.' },
+      { name: 'Алиса Б.', date: '30 сентября 2026', rating: 5, text: 'Тирамису — лучший, что я ела вне Италии. Приду ещё.' }
+    ]
+  },
+  {
+    id: 'kofe-na-kolese',
+    name: 'Кофе на колесе',
+    type: 'кафе',
+    cuisine: 'Кофейня',
+    district: 'Набережная',
+    rating: 4.5,
+    reviewsCount: 143,
+    check: 700,
+    price: 'low',
+    tags: ['Обжарка на месте', 'С собой', 'Велосипеды'],
+    short: 'Мини-обжарочный цех и стойка на шесть мест. Без Wi-Fi — и это принципиально.',
+    address: 'наб. Речная, 32',
+    phone: '+7 (800) 100-19-72',
+    hours: 'Пн–Пт · 08:00 — 20:00',
+    closed: 'Сб, Вс — выходные',
+    images: [
+      U('photo-1442512595331-e89e73853f31'),
+      U('photo-1509042239860-f550ce710b93'),
+      U('photo-1495474472287-4d71bcdd2085'),
+      U('photo-1466978913421-dad2ebd01d17'),
+      U('photo-1445116572660-236099ec97a0')
+    ],
+    menu: [
+      { name: 'Эспрессо', desc: 'Смесь Бразилия + Эфиопия', price: 180 },
+      { name: 'Капучино', desc: 'Плотное молоко, шоколадный финиш', price: 260, hit: true },
+      { name: 'Фильтр V60', desc: 'Моносорт, меняется каждую неделю', price: 320 },
+      { name: 'Круассан', desc: 'Привозят из нашей пекарни каждое утро', price: 220 }
+    ],
+    reviews: [
+      { name: 'Тимур Ж.', date: '21 октября 2026', rating: 5, text: 'Лучшая обжарка в районе. Зерно всегда свежее, бариста объясняют без снисхождения.' },
+      { name: 'Даша О.', date: '13 октября 2026', rating: 4, text: 'Кофе отличный, но мест почти нет — чаще беру с собой.' },
+      { name: 'Кирилл Н.', date: '2 октября 2026', rating: 4, text: 'Понравилось, что нет Wi-Fi: люди разговаривают. Но закрываются рано.' }
+    ]
+  },
+  {
+    id: 'ryba-i-myaso',
+    name: 'Рыба и мясо',
+    type: 'ресторан',
+    cuisine: 'Гриль',
+    district: 'Парковый',
+    rating: 4.4,
+    reviewsCount: 198,
+    check: 3200,
+    price: 'high',
+    tags: ['Открытый гриль', 'Стейки', 'Большие порции'],
+    short: 'Гриль на живом угле, выдержанные стейки и рыба, которую привозят через день.',
+    address: 'пр. Лесной, 78',
+    phone: '+7 (800) 100-51-40',
+    hours: 'Пн–Вс · 12:00 — 23:30',
+    closed: 'Без выходных',
+    images: [
+      U('photo-1544025162-d76694265947'),
+      U('photo-1467003909585-2f8a72700288'),
+      U('photo-1504674900247-0877df9cc836'),
+      U('photo-1555396273-367ea4eb4db5'),
+      U('photo-1533777857889-4be7c70b33f7')
+    ],
+    menu: [
+      { name: 'Рибай сухого выдержания', desc: '28 дней, на угле, 300 г', price: 3200, hit: true },
+      { name: 'Дорадо на гриле', desc: 'Целиком, с лимоном и тимьяном', price: 1490 },
+      { name: 'Овощи с дымком', desc: 'Печёные на угле, соус из зелени', price: 590 },
+      { name: 'Соус чимичурри', desc: 'Готовим сами, порция', price: 190 }
+    ],
+    reviews: [
+      { name: 'Владимир С.', date: '17 октября 2026', rating: 5, text: 'Рибай прожарки medium rare — ровно как просил. Мясо тает, дым настоящий.' },
+      { name: 'Наталья И.', date: '8 октября 2026', rating: 4, text: 'Вкусно, но дорого. За двоих с вином вышло почти 8 тысяч.' },
+      { name: 'Роман А.', date: '27 сентября 2026', rating: 4, text: 'Рыба свежая, но в выходные обслуживание проседает — ждали счёт минут десять.' }
+    ]
+  },
+  {
+    id: 'chaihana',
+    name: 'Чайхана у моста',
+    type: 'ресторан',
+    cuisine: 'Грузинская',
+    district: 'Набережная',
+    rating: 4.7,
+    reviewsCount: 267,
+    check: 1700,
+    price: 'low',
+    tags: ['Хинкали', 'Тандыр', 'Большие компании'],
+    short: 'Хинкали лепят вручную с утра, хачапури выпекают в тандыре на глазах у гостей.',
+    address: 'наб. Канальная, 18',
+    phone: '+7 (800) 100-26-55',
+    hours: 'Пн–Вс · 11:00 — 23:00',
+    closed: 'Без выходных',
+    images: [
+      U('photo-1552566626-52f8b828add9'),
+      U('photo-1467003909585-2f8a72700288'),
+      U('photo-1533777324565-a040eb52facd'),
+      U('photo-1512621776951-a57141f2eefd'),
+      U('photo-1550966871-3ed3cdb5ed0c')
+    ],
+    menu: [
+      { name: 'Хинкали с говядиной', desc: 'Пять штук, ручная лепка', price: 490, hit: true },
+      { name: 'Хачапури по-аджарски', desc: 'С яйцом и маслом, из тандыра', price: 640, hit: true },
+      { name: 'Чахохбили из курицы', desc: 'Томаты, зелень, специи', price: 720 },
+      { name: 'Домашнее вино', desc: 'Красное, 250 мл', price: 380 }
+    ],
+    reviews: [
+      { name: 'Георгий Ц.', date: '15 октября 2026', rating: 5, text: 'Хинкали с сочным бульоном, тесто тонкое. Как в Тбилиси, без скидок на «адаптацию».' },
+      { name: 'Лена П.', date: '6 октября 2026', rating: 5, text: 'Приходили компанией из восьми человек — посадили быстро, всё принесли горячим.' },
+      { name: 'Андрей В.', date: '25 сентября 2026', rating: 4, text: 'Вкусно и недорого, но зал прокурен запахом тандыра — одежда потом пахнет.' }
+    ]
+  },
+  {
+    id: 'sudno',
+    name: 'Судно',
+    type: 'бар',
+    cuisine: 'Винный бар',
+    district: 'Набережная',
+    rating: 4.6,
+    reviewsCount: 121,
+    check: 2800,
+    price: 'mid',
+    tags: ['Натуральные вина', 'Сырная тарелка', 'Терраса'],
+    short: 'Винный бар на воде: 60 позиций по бокалам, половина — натуральные.',
+    address: 'наб. Причальная, 3',
+    phone: '+7 (800) 100-06-14',
+    hours: 'Ср–Вс · 16:00 — 01:00',
+    closed: 'Пн, Вт — выходные',
+    images: [
+      U('photo-1510812431401-41d2bd2722f3'),
+      U('photo-1514933651103-005eec06c04b'),
+      U('photo-1470337458703-46ad1756a187'),
+      U('photo-1424847651672-bf20a4b0982b'),
+      U('photo-1592861956120-e524fc739696')
+    ],
+    menu: [
+      { name: 'Бокал оранжа', desc: 'Грузия, квеври, 150 мл', price: 690, hit: true },
+      { name: 'Сырная тарелка', desc: 'Пять сыров, мёд, орехи', price: 1290 },
+      { name: 'Тартин с паштетом', desc: 'Куриный паштет, бриошь, корнишоны', price: 540 },
+      { name: 'Дегустация из 3 вин', desc: 'Подборка сомелье', price: 1600, hit: true }
+    ],
+    reviews: [
+      { name: 'Оксана Р.', date: '18 октября 2026', rating: 5, text: 'Сомелье подобрал три вина под наш сыр — попали все три. Вид на воду вечером просто космос.' },
+      { name: 'Павел М.', date: '10 октября 2026', rating: 4, text: 'Хорошо, но на террасе прохладно даже с пледами. И цены на бокал выше среднего.' },
+      { name: 'Женя Т.', date: '29 сентября 2026', rating: 4, text: 'Атмосфера камерная, отличная музыка. Столиков мало, бронировать обязательно.' }
+    ]
+  },
+  {
+    id: 'bulka',
+    name: 'Булка',
+    type: 'кафе',
+    cuisine: 'Пекарня',
+    district: 'Центр',
+    rating: 4.5,
+    reviewsCount: 176,
+    check: 850,
+    price: 'low',
+    tags: ['Хлеб на закваске', 'Выпечка', 'Завтраки'],
+    short: 'Пекарня на закваске: хлеб выходит из печи в 8:00 и к полудню обычно кончается.',
+    address: 'ул. Марата, 10',
+    phone: '+7 (800) 100-55-08',
+    hours: 'Пн–Вс · 07:00 — 20:00',
+    closed: 'Без выходных',
+    images: [
+      U('photo-1509440159596-0249088772ff'),
+      U('photo-1555507036-ab1f4038808a'),
+      U('photo-1559339352-11d035aa65de'),
+      U('photo-1445116572660-236099ec97a0'),
+      U('photo-1495474472287-4d71bcdd2085')
+    ],
+    menu: [
+      { name: 'Хлеб на закваске', desc: 'Пшенично-ржаной, 800 г', price: 340, hit: true },
+      { name: 'Синнабон', desc: 'С корицей и сливочной глазурью', price: 260 },
+      { name: 'Сэндвич с индейкой', desc: 'На своём хлебе, с горчицей', price: 420, hit: true },
+      { name: 'Какао', desc: 'На цельном молоке, с маршмеллоу', price: 240 }
+    ],
+    reviews: [
+      { name: 'Вера Д.', date: '22 октября 2026', rating: 5, text: 'Хлеб действительно уходит к обеду. Прихожу к открытию — всегда свежий и тёплый.' },
+      { name: 'Илья С.', date: '12 октября 2026', rating: 4, text: 'Выпечка отличная, но посидеть негде — два столика у окна.' },
+      { name: 'Настя Л.', date: '3 октября 2026', rating: 4, text: 'Сэндвич простой и честный. Какао густое, как в детстве.' }
+    ]
+  },
+  {
+    id: 'tokyo-izakaya',
+    name: 'Идзакая Токио',
+    type: 'бар',
+    cuisine: 'Японская',
+    district: 'Верхний город',
+    rating: 4.5,
+    reviewsCount: 156,
+    check: 2100,
+    price: 'mid',
+    tags: ['Саке', 'Рамен', 'Поздняя кухня'],
+    short: 'Идзакая с саке-картой на 20 позиций и кухней до последнего гостя.',
+    address: 'ул. Ломоносова, 7',
+    phone: '+7 (800) 100-90-27',
+    hours: 'Пн–Сб · 17:00 — 01:00',
+    closed: 'Вс — выходной',
+    images: [
+      U('photo-1553621042-f6e147245754'),
+      U('photo-1569718212165-3a8278d5f624'),
+      U('photo-1572116469696-31de0f17cc34'),
+      U('photo-1514933651103-005eec06c04b'),
+      U('photo-1540189549336-e6e99c3679fe')
+    ],
+    menu: [
+      { name: 'Тонкоцу рамен', desc: 'Бульон 12 часов, чашу, яйцо аджитама', price: 780, hit: true },
+      { name: 'Гёдза с курицей', desc: 'Шесть штук, на пару или жареные', price: 460 },
+      { name: 'Сет саке', desc: 'Три вида, 30 мл каждый', price: 1100, hit: true },
+      { name: 'Якитори ассорти', desc: 'Пять шпажек на выбор', price: 890 }
+    ],
+    reviews: [
+      { name: 'Александра Ю.', date: '19 октября 2026', rating: 5, text: 'Рамен с плотным бульоном, не жирный. Сет саке — отличный способ попробовать разное без переплаты.' },
+      { name: 'Григорий Ф.', date: '9 октября 2026', rating: 4, text: 'Атмосфера как в настоящей идзакае: тесно, шумно, вкусно. Места лучше бронировать.' },
+      { name: 'Марина Е.', date: '26 сентября 2026', rating: 4, text: 'Кухня до ночи — главный плюс. Но вентиляция слабая, запах остаётся на одежде.' }
+    ]
+  },
+  {
+    id: 'ferma',
+    name: 'Ферма',
+    type: 'ресторан',
+    cuisine: 'Фермерская',
+    district: 'Парковый',
+    rating: 4.3,
+    reviewsCount: 132,
+    check: 1900,
+    price: 'low',
+    tags: ['Сезонное меню', 'Дети', 'Парковка'],
+    short: 'Меню меняется каждые две недели вслед за сезоном и тем, что привезли с фермы.',
+    address: 'пр. Коломяжский, 21',
+    phone: '+7 (800) 100-14-38',
+    hours: 'Пн–Вс · 11:00 — 22:00',
+    closed: 'Без выходных',
+    images: [
+      U('photo-1546069901-ba9599a7e63c'),
+      U('photo-1512621776951-a57141f2eefd'),
+      U('photo-1533777857889-4be7c70b33f7'),
+      U('photo-1555396273-367ea4eb4db5'),
+      U('photo-1481833761820-0509d3217039')
+    ],
+    menu: [
+      { name: 'Салат с печёной свёклой', desc: 'Козий сыр, кедровые орехи', price: 480, hit: true },
+      { name: 'Куриный бульон с домашней лапшой', desc: 'Варим каждый день', price: 390 },
+      { name: 'Котлета из индейки с пюре', desc: 'Детская порция', price: 420 },
+      { name: 'Шарлотка с мороженым', desc: 'Из сезонных яблок', price: 350, hit: true }
+    ],
+    reviews: [
+      { name: 'Елена Х.', date: '14 октября 2026', rating: 4, text: 'Спокойное семейное место, детей принимают по-человечески. Еда простая, но честная.' },
+      { name: 'Денис У.', date: '4 октября 2026', rating: 4, text: 'Понравилось сезонное меню. Порции средние, чек приятный.' },
+      { name: 'Ирина З.', date: '23 сентября 2026', rating: 4, text: 'Хорошо, но без «вау». Место, куда приходят регулярно, а не на праздник.' }
+    ]
+  }
+];
+
+/* Пользовательские отзывы для секции «Что говорят люди» */
+const QUOTES = [
+  {
+    text: 'Пользуюсь вместо карт и отзывов в агрегаторах. Здесь хотя бы понятно, за что платишь: средний чек, порции, шумно или нет.',
+    name: 'Антон Р.', role: 'читатель с 2023 года', place: 'Kokoko', rating: 5
+  },
+  {
+    text: 'Нашла три любимых кафе за месяц. Фильтр по чеку — гениальная штука, когда идёшь не один.',
+    name: 'Марина Д.', role: 'ходит по кафе каждую неделю', place: 'Цветы', rating: 5
+  },
+  {
+    text: 'Редкий случай, когда обзор не пытается продать тебе дегустационный сет за пятнадцать тысяч.',
+    name: 'Кирилл М.', role: 'ходит по барам', place: 'Небный', rating: 5
+  },
+  {
+    text: 'Однажды написали, что в заведении шумно, — и это оказалось правдой. Теперь верю остальному.',
+    name: 'Ольга С.', role: 'ценит тишину', place: 'Pastaio', rating: 4
+  }
+];
+</script>
+
+<script>
+/* ============================================================
+   ЯДРО: утилиты, курсор, прелоадер, анимации входа
+   ============================================================ */
+const $  = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+const lerp = (a, b, t) => a + (b - a) * t;
+const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
+
+const fmt = n => new Intl.NumberFormat('ru-RU').format(Math.round(n));
+const money = n => fmt(n) + ' ₽';
+
+/* ---------- Троттлинг через rAF ---------- */
+function rafThrottle(fn) {
+  let queued = false, lastArgs = null;
+  return function (...args) {
+    lastArgs = args;
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      fn.apply(this, lastArgs);
+    });
+  };
+}
+
+/* ---------- Прелоадер ---------- */
+(function preload() {
+  const el = $('#preloader'), bar = $('#preBar'), num = $('#preNum');
+  let p = 0;
+  const tick = () => {
+    p = Math.min(100, p + Math.random() * 16 + 6);
+    bar.style.width = p + '%';
+    num.textContent = String(Math.floor(p)).padStart(2, '0');
+    if (p < 100) setTimeout(tick, 110);
+    else setTimeout(() => {
+      el.classList.add('is-done');
+      document.body.classList.add('is-ready');
+      bootAnimations();
+    }, 260);
+  };
+  // не ждём дольше 1.8с — сайт должен быть быстрым
+  setTimeout(() => { if (p < 100) { p = 100; bar.style.width = '100%'; num.textContent = '100'; } }, 1800);
+  tick();
+})();
+
+/* ---------- Кастомный курсор с инерцией ---------- */
+(function cursor() {
+  if (isTouch || prefersReduced) return;
+  const ring = $('#cursor'), dot = $('#cursorDot');
+  let mx = innerWidth / 2, my = innerHeight / 2;
+  let rx = mx, ry = my;
+
+  const onMove = rafThrottle(e => { mx = e.clientX; my = e.clientY; });
+  addEventListener('mousemove', onMove, { passive: true });
+
+  (function loop() {
+    rx = lerp(rx, mx, 0.16);
+    ry = lerp(ry, my, 0.16);
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    dot.style.transform  = `translate(${mx}px, ${my}px)`;
+    requestAnimationFrame(loop);
+  })();
+
+  // увеличение на интерактивных элементах
+  const hoverables = 'a, button, .card, .pcard, .chip, input, select, .gthumb';
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest(hoverables)) document.body.classList.add('is-hovering');
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest(hoverables)) document.body.classList.remove('is-hovering');
+  });
+})();
+
+/* ---------- Плавный скролл (Lenis) ---------- */
+let lenis = null;
+function initSmoothScroll() {
+  if (prefersReduced || typeof Lenis === 'undefined') return;
+  lenis = new Lenis({
+    duration: 1.15,
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    touchMultiplier: 1.6
+  });
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+
+  // якоря
+  $$('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length < 2) return;
+      const target = $(id);
+      if (!target) return;
+      e.preventDefault();
+      closeMobileMenu();
+      lenis.scrollTo(target, { offset: -70, duration: 1.4 });
+    });
+  });
+}
+
+/* ---------- Магнитные кнопки ---------- */
+function initMagnetic() {
+  if (isTouch || prefersReduced) return;
+  $$('[data-magnetic]').forEach(el => {
+    const strength = 0.32;
+    const onMove = rafThrottle(e => {
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = (e.clientX - cx) * strength;
+      const dy = (e.clientY - cy) * strength;
+      el.style.transform = `translate(${clamp(dx, -26, 26)}px, ${clamp(dy, -18, 18)}px)`;
+    });
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', () => {
+      el.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
+      el.style.transform = 'translate(0,0)';
+      setTimeout(() => (el.style.transition = ''), 600);
+    });
+    el.addEventListener('mouseenter', () => (el.style.transition = 'transform .12s linear'));
+  });
+}
+
+/* ---------- Анимация появления заголовка по буквам ---------- */
+function splitHeroTitle() {
+  const title = $('#heroTitle');
+  if (!title) return;
+  $$('[data-split]', title).forEach((line, li) => {
+    const walk = node => {
+      const out = [];
+      node.childNodes.forEach(child => {
+        if (child.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          [...child.textContent].forEach(ch => {
+            if (ch === ' ') { out.push(' '); frag.append(' '); return; }
+            const s = document.createElement('span');
+            s.className = 'char';
+            s.textContent = ch;
+            frag.append(s);
+            out.push(s);
+          });
+          child.replaceWith(frag);
+        } else if (child.nodeType === 1) {
+          // сохраняем обёртку (например .grad-text)
+          walk(child);
+        }
+      });
+      return out;
+    };
+    $$('span, .grad-text', line).length && walk(line);
+    if (!$$('.char', line).length) walk(line);
+  });
+}
+
+function bootAnimations() {
+  const chars = $$('#heroTitle .char');
+  if (typeof gsap !== 'undefined' && !prefersReduced) {
+    gsap.set(chars, { yPercent: 118, opacity: 0, rotate: 6 });
+    gsap.to(chars, {
+      yPercent: 0, opacity: 1, rotate: 0,
+      duration: 1.05, ease: 'expo.out',
+      stagger: 0.022, delay: 0.08
+    });
+    gsap.from('[data-hero-fade]', {
+      y: 26, opacity: 0, duration: 0.95, ease: 'power3.out',
+      stagger: 0.09, delay: 0.42
+    });
+    // счётчики в hero
+    setTimeout(runCounters, 700);
+  } else {
+    $$('[data-hero-fade]').forEach(el => (el.style.opacity = 1));
+    runCounters();
+  }
+
+  // лёгкий параллакс слоёв при скролле
+  parallaxLayers();
+}
+
+/* ---------- Анимированные счётчики ---------- */
+function animateCount(el) {
+  const target = parseFloat(el.dataset.count);
+  const decimals = parseInt(el.dataset.decimals || '0', 10);
+  const dur = 1400;
+  const start = performance.now();
+  const step = now => {
+    const t = clamp((now - start) / dur, 0, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = target * eased;
+    el.textContent = decimals
+      ? val.toFixed(decimals).replace('.', ',')
+      : fmt(val);
+    if (t < 1) requestAnimationFrame(step);
+    else el.textContent = decimals ? target.toFixed(decimals).replace('.', ',') : fmt(target);
+  };
+  requestAnimationFrame(step);
+}
+
+let countersDone = false;
+function runCounters() {
+  if (countersDone) return;
+  countersDone = true;
+  $$('[data-count]').forEach(animateCount);
+}
+
+/* ---------- Reveal при скролле + счётчики в каталоге ---------- */
+function initReveal() {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.classList.add('is-in');
+        io.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  $$('[data-reveal]').forEach(el => io.observe(el));
+
+  // счётчики в hero, если проскроллили мимо
+  const statsIO = new IntersectionObserver(es => {
+    if (es[0].isIntersecting) runCounters();
+  }, { threshold: 0.3 });
+  const stats = $('#heroStats');
+  if (stats) statsIO.observe(stats);
+}
+
+/* ---------- Параллакс слоёв ---------- */
+function parallaxLayers() {
+  if (prefersReduced) return;
+  const els = $$('[data-parallax]');
+  if (!els.length) return;
+  const onScroll = rafThrottle(() => {
+    const y = scrollY;
+    els.forEach(el => {
+      const speed = parseFloat(el.dataset.parallax) || 0.1;
+      el.style.transform = `translate3d(0, ${y * speed}px, 0)`;
+    });
+  });
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+/* ---------- Хедер: скрытие при скролле вниз ---------- */
+function initHeader() {
+  const nav = $('#nav'), progress = $('#progress');
+  let last = 0;
+  const onScroll = rafThrottle(() => {
+    const y = scrollY;
+    nav.classList.toggle('is-scrolled', y > 40);
+    if (y > 420 && y > last) nav.classList.add('is-hidden');
+    else nav.classList.remove('is-hidden');
+    last = y;
+
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
+  });
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+/* ---------- Мобильное меню ---------- */
+function closeMobileMenu() {
+  $('#nav')?.classList.remove('is-open');
+  $('#mobileMenu')?.classList.remove('is-open');
+  $('#burger')?.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('menu-open');
+  lenis?.start();
+}
+function initMobileMenu() {
+  const burger = $('#burger'), menu = $('#mobileMenu');
+  if (!burger) return;
+  burger.addEventListener('click', () => {
+    const open = !menu.classList.contains('is-open');
+    menu.classList.toggle('is-open', open);
+    $('#nav').classList.toggle('is-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('menu-open', open);
+    open ? lenis?.stop() : lenis?.start();
+  });
+  $$('a', menu).forEach(a => a.addEventListener('click', closeMobileMenu));
+}
+
+/* ---------- Toast ---------- */
+let toastTimer;
+function toast(msg) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('is-shown');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('is-shown'), 3200);
+}
+</script>
+
+<script>
+/* ============================================================
+   THREE.JS — HERO 3D
+   Тарелки, бокалы, кофейные зёрна, кольца, сферы, лепестки частиц.
+   Параллакс по мыши + реакция на скролл + «дыхание» света.
+   ============================================================ */
+function initHero3D() {
+  const canvas = $('#hero-canvas');
+  if (!canvas || typeof THREE === 'undefined' || prefersReduced) return;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 120);
+  camera.position.set(0, 0, 9);
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas, antialias: true, alpha: true, powerPreference: 'high-performance'
+  });
+  renderer.setClearAlpha(0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+  const DPR_CAP = innerWidth < 760 ? 1.6 : 2;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, DPR_CAP));
+
+  /* ---------- Свет ---------- */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+  const key = new THREE.DirectionalLight(0xFFC400, 3.0);
+  key.position.set(5, 6, 7);
+  scene.add(key);
+
+  const rim = new THREE.DirectionalLight(0xFF9D00, 2.2);
+  rim.position.set(-7, -3, 3);
+  scene.add(rim);
+
+  const cool = new THREE.PointLight(0x8FA3B0, 1.4, 30);
+  cool.position.set(-4, 5, -6);
+  scene.add(cool);
+
+  const fill = new THREE.PointLight(0xFFE066, 1.0, 24);
+  fill.position.set(4, -5, 2);
+  scene.add(fill);
+
+  /* ---------- Материалы ---------- */
+  const porcelain = new THREE.MeshStandardMaterial({
+    color: 0xF3EFE4, roughness: 0.25, metalness: 0.15
+  });
+  const sunMetal = new THREE.MeshStandardMaterial({
+    color: 0xFFC400, roughness: 0.15, metalness: 0.98,
+    emissive: 0x3A2600, emissiveIntensity: 0.9
+  });
+  const graphite = new THREE.MeshStandardMaterial({
+    color: 0x2F3640, roughness: 0.32, metalness: 0.75
+  });
+  const glass = new THREE.MeshPhysicalMaterial({
+    color: 0xFFE9A8, roughness: 0.05, metalness: 0,
+    transmission: 0.94, thickness: 0.7, ior: 1.46,
+    transparent: true, opacity: 0.9,
+    clearcoat: 1, clearcoatRoughness: 0.05
+  });
+  const beanMat = new THREE.MeshStandardMaterial({ color: 0x4A2E1E, roughness: 0.7, metalness: 0.1 });
+
+  /* ---------- Тарелка ---------- */
+  function makePlate(scale = 1) {
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(1, 0.93, 0.075, 72), porcelain));
+
+    const rimRing = new THREE.Mesh(new THREE.TorusGeometry(0.97, 0.055, 22, 80), sunMetal);
+    rimRing.rotation.x = Math.PI / 2;
+    rimRing.position.y = 0.045;
+    g.add(rimRing);
+
+    const inner = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.016, 12, 64), sunMetal);
+    inner.rotation.x = Math.PI / 2;
+    inner.position.y = 0.047;
+    g.add(inner);
+
+    // декоративная «капля» в центре
+    const drop = new THREE.Mesh(new THREE.SphereGeometry(0.16, 24, 18), sunMetal);
+    drop.scale.set(1, 0.45, 1);
+    drop.position.y = 0.06;
+    g.add(drop);
+
+    g.scale.setScalar(scale);
+    return g;
+  }
+
+  /* ---------- Бокал ---------- */
+  function makeGlass(scale = 1) {
+    const pts = [
+      [0.0, 0.0], [0.36, 0.0], [0.36, 0.035], [0.075, 0.06],
+      [0.055, 0.95], [0.10, 1.02], [0.34, 1.30], [0.40, 1.62],
+      [0.38, 1.66], [0.33, 1.60], [0.05, 1.06]
+    ].map(([x, y]) => new THREE.Vector2(x, y));
+    const geom = new THREE.LatheGeometry(pts, 56);
+    geom.computeVertexNormals();
+    const mesh = new THREE.Mesh(geom, glass);
+    mesh.scale.setScalar(scale * 0.92);
+    return mesh;
+  }
+
+  /* ---------- Кофейное зерно ---------- */
+  function makeBean(scale = 1) {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.26, 26, 20), beanMat);
+    body.scale.set(1, 1.42, 0.62);
+    g.add(body);
+    const groove = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.026, 10, 28, Math.PI), graphite);
+    groove.rotation.set(Math.PI / 2, 0, 0);
+    g.add(groove);
+    g.scale.setScalar(scale);
+    return g;
+  }
+
+  /* ---------- Кольцо-орбита ---------- */
+  function makeRing(radius, tube, mat) {
+    const m = new THREE.Mesh(new THREE.TorusGeometry(radius, tube, 16, 120), mat);
+    return m;
+  }
+
+  /* ---------- Композиция ---------- */
+  const group = new THREE.Group();
+  scene.add(group);
+  const floaters = [];   // объекты, которые «парят»
+  const spinners = [];   // объекты, которые крутятся
+
+  const addFloater = (mesh, cfg) => {
+    mesh.position.set(cfg.x, cfg.y, cfg.z);
+    if (cfg.rot) mesh.rotation.set(cfg.rot[0], cfg.rot[1], cfg.rot[2]);
+    group.add(mesh);
+    floaters.push({
+      mesh,
+      base: mesh.position.clone(),
+      amp: cfg.amp ?? 0.24,
+      speed: cfg.speed ?? 0.55,
+      phase: Math.random() * 6.28,
+      spin: cfg.spin ?? 0
+    });
+    if (cfg.spin) { mesh.userData.spin = cfg.spin; spinners.push(mesh); }
+    return mesh;
+  };
+
+  // Тарелки — 4 штуки, разного масштаба и глубины
+  addFloater(makePlate(1.05), { x: 3.0, y: 1.5, z: -1.0, rot: [-0.9, 0, 0.4], amp: 0.26, spin: 0.0016 });
+  addFloater(makePlate(0.85), { x: -3.4, y: -1.4, z: 0.4, rot: [1.0, 0, -0.6], amp: 0.3, spin: -0.0013 });
+  addFloater(makePlate(0.7),  { x: 2.2, y: -2.4, z: -3.0, rot: [-1.2, 0, 0.9], amp: 0.22, spin: 0.0011 });
+  addFloater(makePlate(0.55), { x: -2.0, y: 2.6, z: -4.2, rot: [0.7, 0, 0.3], amp: 0.34, spin: -0.0009 });
+
+  // Бокалы — 3
+  addFloater(makeGlass(1.05), { x: -2.6, y: 1.9, z: -1.4, rot: [0, 0, 0.19], amp: 0.28, spin: 0.0026 });
+  addFloater(makeGlass(0.78), { x: 3.5, y: -0.4, z: -2.2, rot: [0, 0, -0.15], amp: 0.32, spin: -0.0022 });
+  addFloater(makeGlass(0.6),  { x: 0.4, y: 2.9, z: -5.0, rot: [0, 0, 0.1], amp: 0.4, spin: 0.0018 });
+
+  // Кольца-орбиты
+  addFloater(makeRing(1.55, 0.014, sunMetal), { x: 3.0, y: 1.5, z: -1.0, rot: [1.1, 0.4, 0], amp: 0.3, spin: 0.004 });
+  addFloater(makeRing(1.15, 0.01, graphite),   { x: -3.4, y: -1.4, z: 0.4, rot: [0.6, 1.0, 0], amp: 0.36, spin: -0.0035 });
+  addFloater(makeRing(0.9, 0.012, sunMetal),   { x: -2.6, y: 1.9, z: -1.4, rot: [1.4, 0.2, 0.5], amp: 0.26, spin: 0.005 });
+
+  // Маленькие сферы-«капли»
+  for (let i = 0; i < 9; i++) {
+    const r = 0.06 + Math.random() * 0.11;
+    const mat = Math.random() > 0.4 ? sunMetal : porcelain;
+    addFloater(new THREE.Mesh(new THREE.SphereGeometry(r, 20, 14), mat), {
+      x: (Math.random() - 0.5) * 13,
+      y: (Math.random() - 0.5) * 8.5,
+      z: -3 + Math.random() * 4,
+      amp: 0.3 + Math.random() * 0.5,
+      speed: 0.2 + Math.random() * 0.4
+    });
+  }
+
+  // Зёрна — 18
+  for (let i = 0; i < 18; i++) {
+    addFloater(makeBean(0.5 + Math.random() * 0.75), {
+      x: (Math.random() - 0.5) * 14,
+      y: (Math.random() - 0.5) * 9,
+      z: -3.5 + Math.random() * 5,
+      amp: 0.26 + Math.random() * 0.55,
+      speed: 0.18 + Math.random() * 0.42,
+      spin: 0.004
+    });
+  }
+
+  /* ---------- Частицы на фоне ---------- */
+  const PCOUNT = 260;
+  const positions = new Float32Array(PCOUNT * 3);
+  const speeds = new Float32Array(PCOUNT);
+  for (let i = 0; i < PCOUNT; i++) {
+    positions[i * 3]     = (Math.random() - 0.5) * 26;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 16;
+    positions[i * 3 + 2] = -10 + Math.random() * 8;
+    speeds[i] = 0.15 + Math.random() * 0.5;
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+  const pMat = new THREE.PointsMaterial({
+    color: 0xFFC400,
+    size: 0.055,
+    transparent: true,
+    opacity: 0.55,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    sizeAttenuation: true
+  });
+  const points = new THREE.Points(pGeo, pMat);
+  scene.add(points);
+
+  /* ---------- Взаимодействие ---------- */
+  const pointer = { x: 0, y: 0 };
+  const smooth  = { x: 0, y: 0 };
+  let scrollProgress = 0;
+
+  addEventListener('mousemove', rafThrottle(e => {
+    pointer.x = (e.clientX / innerWidth) * 2 - 1;
+    pointer.y = (e.clientY / innerHeight) * 2 - 1;
+  }), { passive: true });
+
+  addEventListener('deviceorientation', rafThrottle(e => {
+    if (e.gamma == null) return;
+    pointer.x = clamp(e.gamma / 35, -1, 1);
+    pointer.y = clamp((e.beta - 45) / 35, -1, 1);
+  }), { passive: true });
+
+  addEventListener('scroll', rafThrottle(() => {
+    scrollProgress = clamp(scrollY / innerHeight, 0, 1);
+  }), { passive: true });
+
+  /* ---------- Ресайз ---------- */
+  function resize() {
+    const w = canvas.clientWidth || innerWidth;
+    const h = canvas.clientHeight || innerHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    camera.position.z = w < 760 ? 13 : 9;
+    pMat.size = w < 760 ? 0.075 : 0.055;
+  }
+  addEventListener('resize', rafThrottle(resize));
+  resize();
+
+  let visible = true;
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0 }).observe($('#hero'));
+
+  /* ---------- Цикл ---------- */
+  const clock = new THREE.Clock();
+
+  function render() {
+    requestAnimationFrame(render);
+    if (!visible) return;
+
+    const t = clock.getElapsedTime();
+
+    smooth.x = lerp(smooth.x, pointer.x, 0.05);
+    smooth.y = lerp(smooth.y, pointer.y, 0.05);
+
+    // вся сцена поворачивается за мышью + уплывает при скролле
+    group.rotation.y = smooth.x * 0.34 + scrollProgress * 0.5;
+    group.rotation.x = smooth.y * 0.22 - scrollProgress * 0.28;
+    group.position.x = -smooth.x * 0.6;
+    group.position.y = smooth.y * 0.42 + scrollProgress * 1.6;
+    group.position.z = scrollProgress * -1.2;
+
+    // парение
+    for (const f of floaters) {
+      f.mesh.position.y = f.base.y + Math.sin(t * f.speed + f.phase) * f.amp;
+      f.mesh.position.x = f.base.x + Math.cos(t * f.speed * 0.7 + f.phase) * f.amp * 0.55;
+    }
+
+    // осевое вращение
+    for (const m of spinners) {
+      m.rotation.y += Math.abs(m.userData.spin || 0.002);
+    }
+
+    // частицы медленно поднимаются
+    const pos = pGeo.attributes.position.array;
+    for (let i = 0; i < PCOUNT; i++) {
+      pos[i * 3 + 1] += speeds[i] * 0.006;
+      if (pos[i * 3 + 1] > 8) pos[i * 3 + 1] = -8;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+    points.rotation.y = smooth.x * 0.06;
+
+    // «дыхание» света
+    key.intensity = 2.7 + Math.sin(t * 0.85) * 0.45;
+    rim.intensity = 2.0 + Math.cos(t * 0.65) * 0.4;
+    fill.intensity = 0.9 + Math.sin(t * 1.1 + 1) * 0.25;
+
+    renderer.render(scene, camera);
+  }
+  render();
+}
+
+/* ============================================================
+   РЕНДЕР: карточки, карусель, отзывы, бегущая строка
+   ============================================================ */
+
+const STAR_SVG = '<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.9-5 4.8 1.2 6.8L12 17.6 6 20.8l1.2-6.8-5-4.8 6.9-.9z"/></svg>';
+
+function starsHTML(rating) {
+  const full = Math.round(rating);
+  let out = '<span class="stars">';
+  for (let i = 1; i <= 5; i++) out += STAR_SVG.replace('<svg', `<svg class="${i > full ? 'off' : ''}"`);
+  return out + '</span>';
+}
+
+/* ---------- Карточка каталога ---------- */
+function cardHTML(p) {
+  return `
+  <article class="card" data-id="${p.id}" data-tilt>
+    <div class="card__media">
+      <img src="${p.images[0]}" alt="${p.name}" loading="lazy" decoding="async">
+      <span class="card__badge">${p.type}</span>
+      <span class="card__badge card__badge--soft">${p.price === 'low' ? '₽' : p.price === 'mid' ? '₽₽' : '₽₽₽'}</span>
+      <span class="card__rating">${STAR_SVG}${p.rating.toFixed(1)}</span>
+    </div>
+    <div class="card__body">
+      <div class="card__cuisine">${p.cuisine}</div>
+      <h3 class="card__title">${p.name}</h3>
+      <div class="card__meta">
+        <span><i>◆</i>${p.district}</span>
+        <span><i>◷</i>${p.hours.split('·')[1].trim().split('—')[0].trim()}—${p.hours.split('—')[1].trim()}</span>
+        <span><i>★</i>${p.reviewsCount} отзывов</span>
+      </div>
+      <div class="card__foot">
+        <span class="card__check">Средний чек <b>${money(p.check)}</b></span>
+        <span class="card__go">↗</span>
+      </div>
+    </div>
+    <span class="card__glare"></span>
+  </article>`;
+}
+
+/* ---------- Карточка карусели ---------- */
+function pcardHTML(p, i) {
+  return `
+  <article class="pcard" data-id="${p.id}">
+    <img src="${p.images[1] || p.images[0]}" alt="${p.name}" loading="lazy" decoding="async">
+    <div class="pcard__shade"></div>
+    <div class="pcard__rank"><b>0${i + 1}</b> · в топе</div>
+    <div class="pcard__body">
+      <div class="pcard__name">${p.name}</div>
+      <div class="pcard__sub">${p.cuisine} · ${p.district}</div>
+      <div class="pcard__row">
+        <span class="score">${STAR_SVG}${p.rating.toFixed(1)}</span>
+        <span>·</span>
+        <span>${money(p.check)}</span>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ---------- Отзыв-карточка ---------- */
+function quoteHTML(q, i) {
+  const avatar = `https://i.pravatar.cc/80?img=${[12, 32, 45, 58][i % 4]}`;
+  return `
+  <article class="quote-card" data-reveal data-delay="${i % 3}">
+    <div class="quote-card__mark">“</div>
+    <div class="quote-card__top">
+      ${starsHTML(q.rating)}
+      <span class="quote-card__place">${q.place}</span>
+    </div>
+    <p class="quote-card__text">${q.text}</p>
+    <div class="quote-card__user">
+      <img class="avatar" src="${avatar}" alt="${q.name}" loading="lazy">
+      <div>
+        <div class="quote-card__name">${q.name}</div>
+        <div class="quote-card__role">${q.role}</div>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ---------- Бегущая строка ---------- */
+function buildTicker() {
+  const track = $('#tickerTrack');
+  if (!track) return;
+  const words = [
+    'Современная русская', 'Спешелти-кофе', 'Хинкали ручной лепки', 'Коктейли на облепихе',
+    'Стейки на угле', 'Натуральные вина', 'Завтраки весь день', 'Хлеб на закваске',
+    'Рамен 12 часов', 'Сезонное меню'
+  ];
+  const set = words.map(w => `<span class="ticker__item">${w}<span class="ticker__star">✦</span></span>`).join('');
+  track.innerHTML = set + set; // дублируем для бесшовной прокрутки
+}
+
+/* ---------- Инициализация статичных блоков ---------- */
+function renderStatic() {
+  buildTicker();
+  // карусель: top-6 по рейтингу
+  const rail = $('#rail');
+  if (rail) {
+    rail.innerHTML = [...PLACES].sort((a, b) => b.rating - a.rating).slice(0, 6)
+      .map((p, i) => pcardHTML(p, i)).join('');
+  }
+  const rg = $('#reviewsGrid');
+  if (rg) rg.innerHTML = QUOTES.map(quoteHTML).join('');
+}
+</script>
+
+<script>
+/* ============================================================
+   КАТАЛОГ: состояние, фильтрация, FLIP, tilt
+   ============================================================ */
+
+const state = {
+  type: 'all',
+  cuisine: 'all',
+  price: 'all',
+  rating: 0,
+  query: '',
+  sort: 'rating'
+};
+
+/* ---------- Точка входа рендера ---------- */
+function mountCatalog() {
+  const grid = $('#grid');
+  grid.innerHTML = PLACES.map(p => `<div class="card-slot">${cardHTML(p)}</div>`).join('');
+  buildCuisineChips();
+  bindCardEvents();
+  applyFilters(true);
+}
+
+/* ---------- Чипы кухонь (динамически из данных) ---------- */
+function buildCuisineChips() {
+  const wrap = $('#cuisineFilters');
+  const list = [...new Set(PLACES.map(p => p.cuisine))].sort((a, b) => a.localeCompare(b, 'ru'));
+  wrap.innerHTML = `<button class="chip is-active" data-cuisine="all">Все кухни</button>` +
+    list.map(c => `<button class="chip" data-cuisine="${c}">${c}</button>`).join('');
+}
+
+/* ---------- Фильтрация ---------- */
+function matches(p) {
+  if (state.type !== 'all' && p.type !== state.type) return false;
+  if (state.cuisine !== 'all' && p.cuisine !== state.cuisine) return false;
+  if (state.price !== 'all') {
+    if (state.price === 'low'  && p.check >= 1500) return false;
+    if (state.price === 'mid'  && (p.check < 1500 || p.check > 3000)) return false;
+    if (state.price === 'high' && p.check < 3000) return false;
+  }
+  if (p.rating < state.rating) return false;
+  if (state.query) {
+    const q = state.query.toLowerCase().trim();
+    const haystack = [
+      p.name, p.cuisine, p.type, p.district, p.short,
+      ...p.tags, ...p.menu.map(m => m.name + ' ' + m.desc)
+    ].join(' ').toLowerCase();
+    if (!haystack.includes(q)) return false;
+  }
+  return true;
+}
+
+function sortList(arr) {
+  const a = [...arr];
+  switch (state.sort) {
+    case 'check-asc':  return a.sort((x, y) => x.check - y.check);
+    case 'check-desc': return a.sort((x, y) => y.check - x.check);
+    case 'name':       return a.sort((x, y) => x.name.localeCompare(y.name, 'ru'));
+    default:           return a.sort((x, y) => y.rating - x.rating);
+  }
+}
+
+/* ---------- FLIP-анимация сетки ----------
+   1. First: запоминаем позиции видимых карточек
+   2. Last: меняем DOM/видимость
+   3. Invert: считаем дельту и ставим transform обратно
+   4. Play: анимируем к нулю
+------------------------------------------- */
+function setSlotOrder(orderedIds) {
+  const grid = $('#grid');
+  const slots = new Map();
+  [...grid.children].forEach(slot => {
+    const card = slot.querySelector('.card');
+    if (!card) return;                       // заглушка .empty — пропускаем
+    slots.set(card.dataset.id, slot);
+  });
+  orderedIds.forEach(id => {
+    const slot = slots.get(id);
+    if (slot) grid.appendChild(slot); // порядок = порядок добавления
+  });
+}
+
+function applyFilters(instant = false) {
+  const grid = $('#grid');
+  const visible = sortList(PLACES.filter(matches));
+  const visibleIds = visible.map(p => p.id);
+
+  // FIRST — только видимые
+  const first = new Map();
+  if (!instant && !prefersReduced) {
+    [...grid.children].forEach(slot => {
+      const card = slot.querySelector('.card');
+      if (card && !slot.classList.contains('is-filtered-out')) {
+        first.set(card.dataset.id, slot.getBoundingClientRect());
+      }
+    });
+  }
+
+  // LAST — показываем/скрываем
+  [...grid.children].forEach(slot => {
+    const card = slot.querySelector('.card');
+    if (!card) return;                       // заглушка удаляется ниже
+    const isVisible = visibleIds.includes(card.dataset.id);
+    slot.classList.toggle('is-filtered-out', !isVisible);
+  });
+  setSlotOrder(visibleIds);
+
+  // пустое состояние
+  const oldEmpty = grid.querySelector('.empty');
+  if (oldEmpty) oldEmpty.remove();
+  if (!visible.length) {
+    const div = document.createElement('div');
+    div.className = 'empty';
+    div.innerHTML = `<h4>Ничего не нашлось</h4>
+      <p>Попробуйте ослабить фильтры — или сбросить их совсем.</p>`;
+    grid.appendChild(div);
+  }
+
+  // счётчики
+  $('#resultsCount').textContent = visible.length;
+  updateFilterCount();
+
+  // INVERT + PLAY
+  if (!instant && !prefersReduced) {
+    [...grid.children].forEach(slot => {
+      if (slot.classList.contains('card-slot') === false) return;
+      const card = slot.querySelector('.card');
+      if (!card) return;
+      const id = card.dataset.id;
+      const last = slot.getBoundingClientRect();
+      const prev = first.get(id);
+      if (!prev) {
+        // новая карточка — просто появляется
+        slot.animate(
+          [{ opacity: 0, transform: 'translateY(18px) scale(.97)' }, { opacity: 1, transform: 'none' }],
+          { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }
+        );
+        return;
+      }
+      const dx = prev.left - last.left;
+      const dy = prev.top - last.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+      slot.animate(
+        [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }],
+        { duration: 620, easing: 'cubic-bezier(.22,1,.36,1)' }
+      );
+    });
+  }
+}
+
+/* ---------- Панель фильтров: открытие/закрытие ---------- */
+function initFilterPanel() {
+  const btn = $('#filterToggle');
+  const panel = $('#filtersPanel');
+  if (!btn || !panel) return;
+
+  const close = () => {
+    panel.classList.remove('is-open');
+    btn.setAttribute('aria-expanded', 'false');
+  };
+  const open = () => {
+    panel.classList.add('is-open');
+    btn.setAttribute('aria-expanded', 'true');
+  };
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    panel.classList.contains('is-open') ? close() : open();
+  });
+  // клик вне панели — закрыть
+  document.addEventListener('click', e => {
+    if (panel.classList.contains('is-open') && !e.target.closest('#toolbar')) close();
+  });
+  addEventListener('keydown', e => {
+    if (e.key === 'Escape') close();
+  });
+  // после выбора фильтра панель не закрываем — даём собрать несколько
+  panel.addEventListener('click', e => e.stopPropagation());
+}
+
+/* ---------- Счётчик активных фильтров ---------- */
+function updateFilterCount() {
+  let n = 0;
+  if (state.type !== 'all') n++;
+  if (state.cuisine !== 'all') n++;
+  if (state.price !== 'all') n++;
+  if (state.rating > 0) n++;
+  if (state.query) n++;
+  const badge = $('#filterCount');
+  if (!badge) return;
+  badge.textContent = n;
+  badge.classList.toggle('is-on', n > 0);
+  const hint = $('#filtersHint');
+  if (hint) hint.textContent = n
+    ? `Активно фильтров: ${n} · найдено ${$('#resultsCount').textContent}`
+    : 'Выберите параметры — сетка обновится сразу';
+}
+
+/* ---------- Обработчики фильтров ---------- */
+function initFilters() {
+  // тип
+  $('#typeFilters').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    $$('.chip', $('#typeFilters')).forEach(c => c.classList.remove('is-active'));
+    b.classList.add('is-active');
+    state.type = b.dataset.type;
+    applyFilters();
+  });
+
+  // кухня (делегирование — чипы рендерятся позже)
+  $('#cuisineFilters').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    $$('.chip', $('#cuisineFilters')).forEach(c => c.classList.remove('is-active'));
+    b.classList.add('is-active');
+    state.cuisine = b.dataset.cuisine;
+    applyFilters();
+  });
+
+  // чек
+  $('#priceFilters').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    $$('.chip', $('#priceFilters')).forEach(c => c.classList.remove('is-active'));
+    b.classList.add('is-active');
+    state.price = b.dataset.price;
+    applyFilters();
+  });
+
+  // рейтинг
+  $('#ratingFilters').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    $$('.chip', $('#ratingFilters')).forEach(c => c.classList.remove('is-active'));
+    b.classList.add('is-active');
+    state.rating = parseFloat(b.dataset.rating);
+    applyFilters();
+  });
+
+  // сортировка
+  $('#sortSelect').addEventListener('change', e => {
+    state.sort = e.target.value;
+    applyFilters();
+  });
+
+  // поиск с живой фильтрацией (дебаунс 140мс)
+  const input = $('#searchInput'), wrap = $('#searchWrap');
+  let t;
+  input.addEventListener('input', () => {
+    wrap.classList.toggle('has-value', input.value.length > 0);
+    clearTimeout(t);
+    t = setTimeout(() => {
+      state.query = input.value;
+      applyFilters();
+    }, 140);
+  });
+  $('#searchClear').addEventListener('click', () => {
+    input.value = '';
+    wrap.classList.remove('has-value');
+    state.query = '';
+    applyFilters();
+    input.focus();
+  });
+
+  // сброс
+  $('#resetFilters').addEventListener('click', () => {
+    state.type = 'all'; state.cuisine = 'all'; state.price = 'all';
+    state.rating = 0; state.query = ''; state.sort = 'rating';
+    input.value = ''; wrap.classList.remove('has-value');
+    $('#sortSelect').value = 'rating';
+    $$('.chip').forEach(c => {
+      const isDefault = ['all', '0'].includes(
+        c.dataset.type || c.dataset.cuisine || c.dataset.price || c.dataset.rating
+      );
+      c.classList.toggle('is-active', isDefault);
+    });
+    applyFilters();
+    toast('Фильтры сброшены');
+  });
+}
+
+/* ---------- 3D tilt + glare ---------- */
+function bindTilt(root = document) {
+  if (isTouch || prefersReduced) return;
+  $$('[data-tilt]', root).forEach(card => {
+    if (card.dataset.tiltBound) return;
+    card.dataset.tiltBound = '1';
+
+    let raf = null, targetX = 0, targetY = 0, curX = 0, curY = 0, active = false;
+
+    const onEnter = () => {
+      active = true;
+      card.style.transition = 'transform .18s ease-out';
+      loop();
+    };
+    const onMove = e => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      targetX = (py - 0.5) * -12;      // rotateX
+      targetY = (px - 0.5) * 12;       // rotateY
+      card.style.setProperty('--gx', `${px * 100}%`);
+      card.style.setProperty('--gy', `${py * 100}%`);
+    };
+    const onLeave = () => {
+      active = false;
+      targetX = 0; targetY = 0;
+      card.style.transition = 'transform .75s cubic-bezier(.22,1,.36,1)';
+    };
+
+    const loop = () => {
+      curX = lerp(curX, targetX, 0.12);
+      curY = lerp(curY, targetY, 0.12);
+      card.style.transform =
+        `perspective(1000px) rotateX(${curX.toFixed(2)}deg) rotateY(${curY.toFixed(2)}deg) translateZ(0)`;
+      if (active || Math.abs(curX) > 0.02 || Math.abs(curY) > 0.02) raf = requestAnimationFrame(loop);
+      else {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        cancelAnimationFrame(raf);
+      }
+    };
+
+    card.addEventListener('mouseenter', onEnter);
+    card.addEventListener('mousemove', onMove);
+    card.addEventListener('mouseleave', onLeave);
+  });
+}
+
+/* ---------- Открытие модалки по клику на карточку ---------- */
+function bindCardEvents() {
+  $('#grid').addEventListener('click', e => {
+    const card = e.target.closest('.card');
+    if (card) openModal(card.dataset.id);
+  });
+  $('#rail').addEventListener('click', e => {
+    const pc = e.target.closest('.pcard');
+    if (pc) openModal(pc.dataset.id);
+  });
+  bindTilt($('#grid'));
+}
+</script>
+
+<script>
+/* ============================================================
+   МОДАЛЬНОЕ ОКНО ЗАВЕДЕНИЯ
+   ============================================================ */
+const modal = $('#modal');
+const modalScroll = $('#modalScroll');
+let lastFocused = null;
+let currentPlace = null;
+let galleryIndex = 0;
+
+function galleryHTML(p) {
+  return `
+  <div class="gallery">
+    <div class="gallery__main">
+      <img id="galleryMain" src="${p.images[0]}" alt="${p.name}">
+      <div class="gallery__shade"></div>
+      <div class="gallery__head">
+        <h2 class="gallery__title" id="modalTitle">${p.name}</h2>
+        <div class="gallery__meta">
+          <span>${p.cuisine}</span>
+          <span class="sep"></span>
+          <span>${p.type}</span>
+          <span class="sep"></span>
+          <span>${STAR_SVG.replace('<svg','<svg style="width:10px;height:10px;fill:var(--sun);vertical-align:-1px"')} ${p.rating.toFixed(1)}</span>
+        </div>
+      </div>
+    </div>
+    <div class="gallery__thumbs">
+      ${p.images.map((src, i) => `
+        <button class="gthumb ${i === 0 ? 'is-active' : ''}" data-gi="${i}" aria-label="Фото ${i + 1}">
+          <img src="${src}" alt="" loading="lazy">
+        </button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function menuHTML(p) {
+  return `
+  <section>
+    <div class="block-title"><span class="num">1</span> Меню</div>
+    <div class="menu-list">
+      ${p.menu.map(m => `
+        <div class="menu-item">
+          <div class="menu-item__name">
+            ${m.name}${m.hit ? '<span class="menu-item__hit">хит</span>' : ''}
+          </div>
+          <div class="menu-item__desc">${m.desc}</div>
+          <div class="menu-item__price">${money(m.price)}</div>
+        </div>`).join('')}
+    </div>
+
+    <div class="check-card">
+      <div class="check-card__label">Средний чек</div>
+      <div class="check-card__value">${fmt(p.check)} ₽ <small>/ на человека</small></div>
+      <div class="check-card__note">
+        ${p.price === 'low' ? 'Демократично: уложитесь в бюджет без компромиссов по вкусу.'
+          : p.price === 'mid' ? 'Средний сегмент: качество выше цены.'
+          : 'Высокий чек: сюда идут за впечатлением, а не за обедом.'}
+      </div>
+    </div>
+  </section>`;
+}
+
+function sideHTML(p) {
+  const tel = p.phone.replace(/[^\d+]/g, '');
+  return `
+  <section>
+    <div class="block-title"><span class="num">3</span> Контакты и часы</div>
+
+    <div class="info-grid">
+      <div class="info-cell">
+        <div class="info-cell__label">Часы работы</div>
+        <div class="info-cell__value">${p.hours}</div>
+        <div class="info-cell__sub">${p.closed}</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-cell__label">Адрес</div>
+        <div class="info-cell__value">${p.address}</div>
+        <div class="info-cell__sub">${p.district}</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-cell__label">Телефон</div>
+        <div class="info-cell__value"><a href="tel:${tel}">${p.phone}</a></div>
+      </div>
+      <div class="info-cell">
+        <div class="info-cell__label">Рейтинг</div>
+        <div class="info-cell__value">${p.rating.toFixed(1)} ${starsHTML(p.rating)}</div>
+        <div class="info-cell__sub">${p.reviewsCount} отзывов</div>
+      </div>
+    </div>
+
+    <a class="btn btn--block" data-magnetic href="tel:${tel}" style="margin-top:16px">
+      Забронировать столик <span class="btn__icon">↗</span>
+    </a>
+  </section>`;
+}
+
+function reviewsSectionHTML(p) {
+  return `
+  <section>
+    <div class="block-title"><span class="num">2</span> Отзывы гостей</div>
+    ${p.reviews.map(r => `
+      <div class="review-item">
+        <div class="review-item__top">
+          <img class="avatar" src="https://i.pravatar.cc/80?u=${encodeURIComponent(r.name)}" alt="${r.name}" loading="lazy">
+          <div>
+            <div class="review-item__name">${r.name}</div>
+            <div class="review-item__date">${r.date}</div>
+          </div>
+          ${starsHTML(r.rating)}
+        </div>
+        <p class="review-item__text">${r.text}</p>
+      </div>`).join('')}
+  </section>`;
+}
+
+function openModal(id) {
+  const p = PLACES.find(x => x.id === id);
+  if (!p) return;
+  currentPlace = p;
+  galleryIndex = 0;
+  lastFocused = document.activeElement;
+
+  // левая колонка — галерея
+  $('#modalMedia').innerHTML = galleryHTML(p);
+
+  // правая колонка — описание, меню, отзывы, контакты
+  modalScroll.innerHTML = `
+    <div class="mbody">
+      <div>
+        <p class="mdesc" style="margin-top:0">${p.short}</p>
+        <div class="tag-row">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+      ${menuHTML(p)}
+      ${reviewsSectionHTML(p)}
+      ${sideHTML(p)}
+    </div>`;
+
+  // галерея: переключение
+  modalScroll.querySelectorAll('.gthumb').forEach(btn => {
+    btn.addEventListener('click', () => {
+      galleryIndex = +btn.dataset.gi;
+      const main = $('#galleryMain');
+      main.src = p.images[galleryIndex];
+      main.style.animation = 'none';
+      void main.offsetWidth;         // reflow — перезапуск анимации
+      main.style.animation = '';
+      modalScroll.querySelectorAll('.gthumb').forEach(b =>
+        b.classList.toggle('is-active', +b.dataset.gi === galleryIndex));
+    });
+  });
+
+  modal.classList.add('is-open');
+  modalScroll.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  lenis?.stop();
+  bindTilt(modalScroll);
+
+  // фокус внутрь модалки — доступность
+  setTimeout(() => modal.querySelector('.modal__close')?.focus(), 100);
+}
+
+function closeModal() {
+  modal.classList.remove('is-open');
+  document.body.style.overflow = '';
+  lenis?.start();
+  lastFocused?.focus?.();
+}
+
+function initModal() {
+  modal.addEventListener('click', e => {
+    if (e.target.closest('[data-modal-close]')) closeModal();
+  });
+  addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+    // стрелки для галереи
+    if (modal.classList.contains('is-open') && currentPlace) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        const n = currentPlace.images.length;
+        galleryIndex = (galleryIndex + (e.key === 'ArrowRight' ? 1 : -1) + n) % n;
+        const main = $('#galleryMain');
+        if (main) main.src = currentPlace.images[galleryIndex];
+        modalScroll.querySelectorAll('.gthumb').forEach(b =>
+          b.classList.toggle('is-active', +b.dataset.gi === galleryIndex));
+      }
+    }
+  });
+}
+
+/* ============================================================
+   КАРУСЕЛЬ: стрелки + drag-to-scroll
+   ============================================================ */
+function initRail() {
+  const rail = $('#rail'), prev = $('#railPrev'), next = $('#railNext');
+  if (!rail) return;
+
+  const step = () => {
+    const card = rail.querySelector('.pcard');
+    return card ? card.offsetWidth + 18 : 320;
+  };
+  const updateBtns = () => {
+    prev.disabled = rail.scrollLeft <= 8;
+    next.disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 8;
+  };
+
+  prev.addEventListener('click', () => rail.scrollBy({ left: -step() * 2, behavior: 'smooth' }));
+  next.addEventListener('click', () => rail.scrollBy({ left: step() * 2, behavior: 'smooth' }));
+  rail.addEventListener('scroll', rafThrottle(updateBtns), { passive: true });
+  updateBtns();
+
+  // drag-to-scroll (мышь)
+  if (!isTouch) {
+    let isDown = false, startX = 0, startLeft = 0, moved = 0;
+    rail.addEventListener('pointerdown', e => {
+      isDown = true; moved = 0;
+      startX = e.clientX; startLeft = rail.scrollLeft;
+      rail.classList.add('is-dragging');
+    });
+    rail.addEventListener('pointermove', e => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      moved = Math.abs(dx);
+      rail.scrollLeft = startLeft - dx;
+    });
+    const end = () => { isDown = false; rail.classList.remove('is-dragging'); };
+    rail.addEventListener('pointerup', end);
+    rail.addEventListener('pointerleave', end);
+    // не открывать модалку после перетаскивания
+    rail.addEventListener('click', e => {
+      if (moved > 8) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
+  }
+}
+
+/* ============================================================
+   ПОДПИСКА
+   ============================================================ */
+function initSubscribe() {
+  const form = $('#subscribeForm');
+  if (!form) return;
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const input = $('#emailInput');
+    const note = $('#subscribeNote');
+    const val = input.value.trim();
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+    if (!ok) {
+      note.textContent = 'Проверьте адрес — кажется, в нём опечатка.';
+      note.style.color = '#FF8A5C';
+      input.focus();
+      return;
+    }
+    note.textContent = 'Готово! Первое письмо придёт в четверг.';
+    note.style.color = '';
+    note.classList.add('is-ok');
+    input.value = '';
+    toast('Вы подписаны на рассылку TASTE');
+  });
+}
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  splitHeroTitle();
+  renderStatic();
+  mountCatalog();
+  initFilters();
+  initFilterPanel();
+  initReveal();
+  initHeader();
+  initMagnetic();
+  initModal();
+  initRail();
+  initSubscribe();
+  initMobileMenu();
+  initSmoothScroll();
+  initHero3D();
+});
+
+// если DOM уже загружен (скрипт в конце body)
+if (document.readyState !== 'loading') {
+  // иначе ждём DOMContentLoaded выше
+}
+</script>
+</body>
+</html>
